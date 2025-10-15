@@ -1,0 +1,360 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}מסננים ותוויות - TodoFast{% endblock %}
+
+{% block content %}
+<div class="container-fluid p-4" x-data="todoApp()">
+    <div class="row">
+        <div class="col-12">
+            <!-- Header -->
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h1 class="h2 mb-1" style="color: var(--text-color);">
+                        <i class="fas fa-filter me-3" style="color: #884dff;"></i>
+                        מסננים ותוויות
+                    </h1>
+                    <p class="text-muted mb-0">
+                        ארגן את המשימות שלך עם מסננים ותוויות מותאמות אישית
+                    </p>
+                </div>
+                <div class="d-flex gap-2">
+                    <button class="btn btn-outline-secondary" 
+                            x-data @click="$dispatch('show-add-label-modal')">
+                        <i class="fas fa-plus me-2"></i>
+                        הוסף תווית
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Quick Filters -->
+            <div class="filters-section mb-5">
+                <h5 class="mb-3">🚀 מסננים מהירים</h5>
+                <div class="row">
+                    <div class="col-md-3 col-6 mb-3">
+                        <a href="{% url 'today' %}" class="filter-card text-decoration-none">
+                            <div class="p-3 rounded-3 border h-100" style="border-color: var(--border-color)!important;">
+                                <div class="d-flex align-items-center mb-2">
+                                    <i class="fas fa-exclamation-triangle text-danger me-3 fa-lg"></i>
+                                    <h6 class="mb-0 fw-semibold" style="color: var(--text-color);">דחוף</h6>
+                                </div>
+                                <p class="text-muted small mb-0">משימות עם עדיפות גבוהה</p>
+                            </div>
+                        </a>
+                    </div>
+                    
+                    <div class="col-md-3 col-6 mb-3">
+                        <a href="{% url 'today' %}" class="filter-card text-decoration-none">
+                            <div class="p-3 rounded-3 border h-100" style="border-color: var(--border-color)!important;">
+                                <div class="d-flex align-items-center mb-2">
+                                    <i class="fas fa-calendar-times text-warning me-3 fa-lg"></i>
+                                    <h6 class="mb-0 fw-semibold" style="color: var(--text-color);">באיחור</h6>
+                                </div>
+                                <p class="text-muted small mb-0">משימות שפג תוקפן</p>
+                            </div>
+                        </a>
+                    </div>
+                    
+                    <div class="col-md-3 col-6 mb-3">
+                        <a href="{% url 'upcoming' %}" class="filter-card text-decoration-none">
+                            <div class="p-3 rounded-3 border h-100" style="border-color: var(--border-color)!important;">
+                                <div class="d-flex align-items-center mb-2">
+                                    <i class="fas fa-calendar-day text-success me-3 fa-lg"></i>
+                                    <h6 class="mb-0 fw-semibold" style="color: var(--text-color);">השבוע</h6>
+                                </div>
+                                <p class="text-muted small mb-0">משימות השבוע הנוכחי</p>
+                            </div>
+                        </a>
+                    </div>
+                    
+                    <div class="col-md-3 col-6 mb-3">
+                        <a href="{% url 'inbox' %}" class="filter-card text-decoration-none">
+                            <div class="p-3 rounded-3 border h-100" style="border-color: var(--border-color)!important;">
+                                <div class="d-flex align-items-center mb-2">
+                                    <i class="fas fa-calendar-plus text-info me-3 fa-lg"></i>
+                                    <h6 class="mb-0 fw-semibold" style="color: var(--text-color);">ללא תאריך</h6>
+                                </div>
+                                <p class="text-muted small mb-0">משימות ללא תאריך יעד</p>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Labels Section -->
+            <div class="labels-section">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h5 class="mb-0">🏷️ התוויות שלי</h5>
+                    <button class="btn btn-sm btn-outline-secondary" 
+                            x-data @click="$dispatch('show-add-label-modal')">
+                        <i class="fas fa-plus me-1"></i>
+                        הוסף תווית
+                    </button>
+                </div>
+                
+                {% if labels %}
+                    <div class="row">
+                        {% for label in labels %}
+                            <div class="col-md-4 col-6 mb-3">
+                                <div class="label-card p-3 rounded-3 border" 
+                                     style="border-color: var(--border-color)!important; cursor: pointer;"
+                                     onclick="filterByLabel('{{ label.id }}')">
+                                    <div class="d-flex align-items-center justify-content-between mb-2">
+                                        <div class="d-flex align-items-center">
+                                            <span class="label-color me-2" 
+                                                  style="display: inline-block; width: 12px; height: 12px; border-radius: 3px; background-color: {{ label.color }};"></span>
+                                            <h6 class="mb-0 fw-semibold" style="color: var(--text-color);">#{{ label.name }}</h6>
+                                        </div>
+                                        <div class="dropdown">
+                                            <button class="btn btn-sm btn-outline-secondary border-0 dropdown-toggle" 
+                                                    type="button" data-bs-toggle="dropdown"
+                                                    onclick="event.stopPropagation();">
+                                                <i class="fas fa-ellipsis-v"></i>
+                                            </button>
+                                            <ul class="dropdown-menu">
+                                                <li><a class="dropdown-item" href="#"><i class="fas fa-edit me-2"></i>ערוך</a></li>
+                                                <li><a class="dropdown-item text-danger" href="#"><i class="fas fa-trash me-2"></i>מחק</a></li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    <p class="text-muted small mb-0">0 משימות</p>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <!-- Empty State -->
+                    <div class="text-center py-5">
+                        <div class="mb-4">
+                            <i class="fas fa-tags fa-4x text-muted opacity-50"></i>
+                        </div>
+                        <h4 class="text-muted mb-3">אין תוויות עדיין</h4>
+                        <p class="text-muted mb-4">צור תוויות כדי לארגן את המשימות שלך טוב יותר</p>
+                        
+                        <button class="btn btn-primary btn-lg" 
+                                x-data @click="$dispatch('show-add-label-modal')">
+                            <i class="fas fa-plus me-2"></i>
+                            צור תווית ראשונה
+                        </button>
+                        
+                        <!-- Tips for labels -->
+                        <div class="mt-5 pt-4 border-top text-start" style="border-color: var(--border-color)!important;">
+                            <h6 class="mb-3">💡 איך להשתמש בתוויות?</h6>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="tip-card p-3 rounded-3 border" style="border-color: var(--border-color)!important;">
+                                        <span class="badge bg-danger mb-2">דחוף</span>
+                                        <h6 class="small fw-semibold">לפי עדיפות</h6>
+                                        <p class="small text-muted mb-0">דחוף, חשוב, רגיל</p>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="tip-card p-3 rounded-3 border" style="border-color: var(--border-color)!important;">
+                                        <span class="badge bg-info mb-2">בית</span>
+                                        <h6 class="small fw-semibold">לפי מקום</h6>
+                                        <p class="small text-muted mb-0">בית, משרד, קניות</p>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="tip-card p-3 rounded-3 border" style="border-color: var(--border-color)!important;">
+                                        <span class="badge bg-success mb-2">קריאה</span>
+                                        <h6 class="small fw-semibold">לפי פעילות</h6>
+                                        <p class="small text-muted mb-0">קריאה, כתיבה, פגישות</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+            
+            <!-- Advanced Filters Section -->
+            <div class="advanced-filters-section mt-5 pt-4 border-top" style="border-color: var(--border-color)!important;">
+                <h5 class="mb-3">🔍 מסננים מתקדמים</h5>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="filter-group p-3 rounded-3 border" style="border-color: var(--border-color)!important;">
+                            <h6 class="mb-3">סינון לפי תאריך</h6>
+                            <div class="d-flex gap-2 flex-wrap">
+                                <button class="btn btn-sm btn-outline-secondary">היום</button>
+                                <button class="btn btn-sm btn-outline-secondary">מחר</button>
+                                <button class="btn btn-sm btn-outline-secondary">השבוע</button>
+                                <button class="btn btn-sm btn-outline-secondary">החודש</button>
+                                <button class="btn btn-sm btn-outline-secondary">ללא תאריך</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="filter-group p-3 rounded-3 border" style="border-color: var(--border-color)!important;">
+                            <h6 class="mb-3">סינון לפי עדיפות</h6>
+                            <div class="d-flex gap-2 flex-wrap">
+                                <button class="btn btn-sm btn-outline-danger">דחוף</button>
+                                <button class="btn btn-sm btn-outline-warning">גבוה</button>
+                                <button class="btn btn-sm btn-outline-info">בינוני</button>
+                                <button class="btn btn-sm btn-outline-secondary">נמוך</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add Label Modal -->
+<div x-data="{ showAddLabelModal: false }" 
+     @show-add-label-modal.window="showAddLabelModal = true"
+     x-show="showAddLabelModal" 
+     x-cloak 
+     class="modal-overlay position-fixed top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center"
+     style="background-color: rgba(0,0,0,0.5); z-index: 1050;">
+    
+    <div @click.away="showAddLabelModal = false" 
+         class="modal-content bg-white rounded-3 p-4 mx-3"
+         style="width: 100%; max-width: 400px; background-color: var(--bg-color)!important; color: var(--text-color);">
+        
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h5 class="mb-0">הוסף תווית חדשה</h5>
+            <button @click="showAddLabelModal = false" class="btn-close"></button>
+        </div>
+        
+        <form @submit.prevent="addLabel()">
+            <div class="mb-3">
+                <label class="form-label">שם התווית</label>
+                <input type="text" 
+                       class="form-control" 
+                       placeholder="למשל: דחוף, בית, עבודה"
+                       x-model="newLabel.name"
+                       style="direction: rtl;"
+                       required>
+            </div>
+            
+            <div class="mb-4">
+                <label class="form-label">צבע התווית</label>
+                <div class="d-flex gap-2 flex-wrap">
+                    <button type="button" 
+                            class="color-option" 
+                            style="width: 30px; height: 30px; border-radius: 6px; border: 2px solid #ddd; background-color: #DB4035;"
+                            @click="newLabel.color = '#DB4035'"></button>
+                    <button type="button" 
+                            class="color-option" 
+                            style="width: 30px; height: 30px; border-radius: 6px; border: 2px solid #ddd; background-color: #FF9933;"
+                            @click="newLabel.color = '#FF9933'"></button>
+                    <button type="button" 
+                            class="color-option" 
+                            style="width: 30px; height: 30px; border-radius: 6px; border: 2px solid #ddd; background-color: #FAD000;"
+                            @click="newLabel.color = '#FAD000'"></button>
+                    <button type="button" 
+                            class="color-option" 
+                            style="width: 30px; height: 30px; border-radius: 6px; border: 2px solid #ddd; background-color: #7ECC49;"
+                            @click="newLabel.color = '#7ECC49'"></button>
+                    <button type="button" 
+                            class="color-option" 
+                            style="width: 30px; height: 30px; border-radius: 6px; border: 2px solid #ddd; background-color: #14AAF5;"
+                            @click="newLabel.color = '#14AAF5'"></button>
+                    <button type="button" 
+                            class="color-option" 
+                            style="width: 30px; height: 30px; border-radius: 6px; border: 2px solid #ddd; background-color: #884DFF;"
+                            @click="newLabel.color = '#884DFF'"></button>
+                </div>
+            </div>
+            
+            <div class="d-flex justify-content-end gap-2">
+                <button type="button" 
+                        @click="showAddLabelModal = false" 
+                        class="btn btn-secondary">
+                    בטל
+                </button>
+                <button type="submit" class="btn btn-primary">
+                    צור תווית
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<style>
+    .filter-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        transition: all 0.2s ease;
+    }
+    
+    .label-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        transition: all 0.2s ease;
+    }
+    
+    .tip-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        transition: all 0.2s ease;
+    }
+    
+    .color-option:hover {
+        transform: scale(1.1);
+        transition: transform 0.2s ease;
+    }
+    
+    .filter-group {
+        background-color: var(--hover-bg);
+    }
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Extend Alpine.js todoApp data
+    document.addEventListener('alpine:init', () => {
+        Alpine.data('todoApp', (existing) => ({
+            ...existing,
+            newLabel: {
+                name: '',
+                color: '#DB4035'
+            },
+            
+            async addLabel() {
+                if (!this.newLabel.name.trim()) return;
+                
+                try {
+                    const response = await fetch('{% url "create_label" %}', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+                        },
+                        body: JSON.stringify(this.newLabel)
+                    });
+                    
+                    const data = await response.json();
+                    
+                    if (data.success) {
+                        // Reset form
+                        this.newLabel = {
+                            name: '',
+                            color: '#DB4035'
+                        };
+                        
+                        // Close modal
+                        this.$dispatch('hide-add-label-modal');
+                        
+                        // Reload page
+                        window.location.reload();
+                    } else {
+                        alert('שגיאה ביצירת התווית: ' + data.error);
+                    }
+                } catch (error) {
+                    alert('שגיאה ביצירת התווית');
+                    console.error(error);
+                }
+            }
+        }))
+    });
+    
+    function filterByLabel(labelId) {
+        // Navigate to filtered view (implement in future)
+        console.log('Filter by label:', labelId);
+    }
+</script>
+{% endblock %}

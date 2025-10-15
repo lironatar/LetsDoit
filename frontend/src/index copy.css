@@ -1,0 +1,1265 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Hebrew:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --modal-sidebar-bg: #FCFAF8;
+}
+
+/* Global theme variables */
+:root {
+  --color-sidebar-bg: #FCFAF8; /* right sidebar background */
+  --color-main-bg: #FFFFFF; /* main content background */
+  --color-secondary: #FFEFE5;  /* selected tabs & add task background */
+  --color-secondary-hover: #F2EFED; /* hover before selection */
+  
+  /* Selected element colors - normal mode */
+  --color-selected-text: #D25340; /* selected tab text color */
+  --color-selected-icon: #DC4C3E; /* selected tab icons and accent elements */
+  
+  /* Text colors */
+  --color-text-primary: #202020; /* titles and main text */
+  --color-text-description: #666666; /* task descriptions */
+  
+  /* Calendar colors */
+  --color-calendar-date: #202020; /* regular calendar dates */
+  --color-calendar-weekend: #808080; /* Friday and Saturday dates */
+  --color-calendar-day-letters: #808080; /* day of week letters */
+}
+
+/* Dark mode theme variables */
+:root.dark {
+  --color-sidebar-bg: #262626; /* right sidebar background - dark mode */
+  --color-main-bg: #1E1E1E; /* main content background - dark mode */
+  --color-secondary: #472525;  /* selected tabs & add task background - dark mode */
+  --color-secondary-hover: #333333; /* hover before selection - dark mode */
+  
+  /* Selected element colors - dark mode */
+  --color-selected-text: #FF7066; /* selected tab text color - dark mode */
+  --color-selected-icon: #FF7066; /* selected tab icons and accent elements - dark mode */
+  
+  /* Text colors - dark mode */
+  --color-text-primary: #FFFFFF; /* titles and main text - dark mode */
+  --color-text-description: #CCCCCC; /* task descriptions - dark mode */
+  
+  /* Calendar colors - dark mode */
+  --color-calendar-date: #FFFFFF; /* regular calendar dates - dark mode */
+  --color-calendar-weekend: #999999; /* Friday and Saturday dates - dark mode */
+  --color-calendar-day-letters: #999999; /* day of week letters - dark mode */
+}
+
+/* Dark mode specific styles */
+:root.dark .border-gray-200 {
+  border-color: #404040;
+}
+
+:root.dark .hover\:bg-gray-100:hover {
+  background-color: #333333;
+}
+
+:root.dark .hover\:bg-gray-200:hover {
+  background-color: #404040;
+}
+
+:root.dark .bg-white {
+  background-color: var(--color-main-bg);
+}
+
+:root.dark .text-gray-500 {
+  color: #999999;
+}
+
+:root.dark .text-gray-600 {
+  color: #CCCCCC;
+}
+
+:root.dark .text-gray-400 {
+  color: #888888;
+}
+
+/* Dark mode dropdown menu styles */
+:root.dark .dropdown-menu {
+  background-color: var(--color-sidebar-bg);
+  border-color: #404040;
+}
+
+/* Light mode dropdown menu - force white background */
+:root:not(.dark) .dropdown-menu {
+  background-color: #FFFFFF !important;
+}
+
+:root.dark .dropdown-menu .border-gray-200 {
+  border-color: #404040;
+}
+
+:root.dark .dropdown-menu .hover\:bg-gray-100:hover {
+  background-color: #333333;
+}
+
+/* Settings modal dark mode styles */
+:root.dark .bg-white {
+  background-color: var(--color-main-bg);
+}
+
+:root.dark input {
+  background-color: var(--color-main-bg);
+  border-color: #404040;
+  color: var(--color-text-primary);
+}
+
+:root.dark input:focus {
+  border-color: #FF7066;
+  --tw-ring-color: #FF7066;
+}
+
+/* Dark mode red color overrides */
+:root.dark .text-red-700 {
+  color: #FF7066;
+}
+
+:root.dark .text-red-800 {
+  color: #FF7066;
+}
+
+:root.dark .hover\:text-red-800:hover {
+  color: #FF7066;
+}
+
+:root.dark .bg-red-500 {
+  background-color: #FF7066;
+}
+
+:root.dark .bg-red-600 {
+  background-color: #FF7066;
+}
+
+:root.dark .border-red-500 {
+  border-color: #FF7066;
+}
+
+:root.dark .text-orange-600 {
+  color: #FF7066;
+}
+
+:root.dark .todoist-red {
+  background-color: #FF7066;
+}
+
+:root.dark .todoist-red:hover {
+  background-color: #FF7066;
+}
+
+:root.dark .btn-primary {
+  background-color: #FF7066;
+}
+
+:root.dark .btn-primary:hover {
+  background-color: #FF7066;
+}
+
+:root.dark .priority-1 {
+  color: #FF7066;
+  border-color: #FF7066;
+}
+
+/* Additional dark mode red overrides */
+:root.dark .text-red-500 {
+  color: #FF7066;
+}
+
+:root.dark .text-red-600 {
+  color: #FF7066;
+}
+
+:root.dark .hover\:text-red-600:hover {
+  color: #FF7066;
+}
+
+:root.dark .bg-red-50 {
+  background-color: rgba(255, 112, 102, 0.1);
+}
+
+:root.dark .hover\:bg-red-50:hover {
+  background-color: rgba(255, 112, 102, 0.1);
+}
+
+:root.dark .hover\:bg-red-700:hover {
+  background-color: #FF7066;
+}
+
+:root.dark .bg-red-500 {
+  background-color: #FF7066;
+}
+
+:root.dark .border-red-200 {
+  border-color: rgba(255, 112, 102, 0.3);
+}
+
+/* Dark mode overrides for specific red hex values */
+:root.dark [style*="#db4c3f"] {
+  background-color: #FF7066 !important;
+}
+
+:root.dark [style*="#c53030"] {
+  background-color: #FF7066 !important;
+}
+
+:root.dark [style*="#dc4c3e"] {
+  background-color: #FF7066 !important;
+}
+
+:root.dark [style*="#e44332"] {
+  background-color: #FF7066 !important;
+}
+
+/* Focus ring overrides for red */
+:root.dark .focus\:ring-\[#db4c3f\]:focus {
+  --tw-ring-color: #FF7066;
+}
+
+:root.dark .focus\:border-\[#db4c3f\]:focus {
+  border-color: #FF7066;
+}
+
+/* Utility helpers for theme colors */
+.bg-secondary { background-color: var(--color-secondary); }
+.bg-secondary-hover { background-color: var(--color-secondary-hover); }
+.hover\:bg-secondary-hover:hover { background-color: var(--color-secondary-hover); }
+.selected-bg-secondary { background-color: var(--color-secondary); }
+.sidebar-bg { background-color: var(--color-sidebar-bg); }
+.main-bg { background-color: var(--color-main-bg); }
+
+/* Selected element color utilities */
+.text-selected { color: var(--color-selected-text); }
+.text-selected-icon { color: var(--color-selected-icon); }
+.font-semibold {
+  font-weight: 700;
+}
+
+/* Sidebar resize styles */
+.sidebar-resizing {
+  transition: none !important;
+}
+
+.sidebar-resize-handle {
+  position: absolute;
+  top: 0;
+  left: -2px;
+  width: 6px;
+  height: 100%;
+  cursor: col-resize;
+  background: #D1D5DB;
+  z-index: 1000;
+  border-radius: 2px;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.sidebar-resize-handle:hover {
+  opacity: 0.6 !important;
+}
+
+.sidebar-resize-handle.active {
+  opacity: 0.6 !important;
+}
+
+/* Sidebar typography override */
+.sidebar .text-base {
+  font-size: 14px !important;
+}
+
+/* Text color utilities */
+.text-primary { color: var(--color-text-primary); }
+
+/* Calendar color utilities */
+.calendar-date { color: var(--color-calendar-date); font-size: 13px !important; }
+.calendar-weekend { color: var(--color-calendar-weekend) !important; }
+.calendar-day-letters { color: var(--color-calendar-day-letters); font-size: 10px !important; }
+/* Ensure description text is always 12px regardless of text-base */
+.text-description { 
+  color: var(--color-text-description); 
+  font-size: 12px !important; 
+}
+
+/* Shared spacer for Sidebar sections (projects/teams) */
+.sidebar-section-spacer {
+  height: 15px; /* adjust once to affect both spacers */
+}
+
+/* Shared left margin for sidebar list item icons/text */
+.sidebar-item-ml {
+  margin-left: 0.32rem; /* was ml-3 */
+}
+
+/* Hashtag icon (SVG as background) for sidebar project/team bullets */
+.hashtag-icon {
+  display: inline-block;
+  width: 13px;
+  height: 13px;
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
+  background-image: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZlcnNpb249IjEuMSIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHdpZHRoPSI1MTIiIGhlaWdodD0iNTEyIiB4PSIwIiB5PSIwIiB2aWV3Qm94PSIwIDAgNDY5LjMzMyA0NjkiIHN0eWxlPSJlbmFibGUtYmFja2dyb3VuZDpuZXcgMCAwIDUxMiA1MTIiIHhtbDpzcGFjZT0icHJlc2VydmUiIGNsYXNzPSIiPjxnIHRyYW5zZm9ybT0ibWF0cml4KC0xLDAsMCwxLDQ2OS4zMzIwMDA3MzI0MjE5LDApIj48cGF0aCBkPSJNNDQ4IDEwNi44NGgtNjQuODEzbDIxLjM5OS03OS44MDljMy4wNS0xMS4zNy0zLjY5MS0yMy4wODItMTUuMDgyLTI2LjEzMy0xMS4zOS0zLjA1LTIzLjEwNiAzLjcxMS0yNi4xMzMgMTUuMDgybC0yNC4zNCA5MC44NkgxODcuNTJsMjEuMzk4LTc5LjgwOWMzLjA1LTExLjM3LTMuNjkxLTIzLjA4Mi0xNS4wODItMjYuMTMzLTExLjM5NS0zLjAyNy0yMy4wODIgMy43MTEtMjYuMTEzIDE1LjA4MmwtMjQuMzY0IDkwLjg2SDY0Yy0xMS43NzcgMC0yMS4zMzIgOS41MzUtMjEuMzMyIDIxLjMzMiAwIDExLjggOS41NTUgMjEuMzM2IDIxLjMzMiAyMS4zMzZoNjcuOTAybC0zNC4zMjQgMTI4SDIxLjMzMkM5LjU1OSAyNzcuNTA4IDAgMjg3LjA0MyAwIDI5OC44NHM5LjU1OSAyMS4zMzIgMjEuMzMyIDIxLjMzMmg2NC44MTNMNjQuNzQ2IDM5OS45OGMtMy4wNSAxMS4zNzIgMy42OTIgMjMuMDgyIDE1LjA4MiAyNi4xMzMgMS44MzYuNDkyIDMuNjkyLjcyNyA1LjUwNC43MjcgOS40MSAwIDE4LjA1LTYuMjc0IDIwLjU5LTE1LjgwOWwyNC4zODMtOTAuODZoMTUxLjUwN2wtMjEuMzk4IDc5LjgxYy0zLjA0NyAxMS4zNyAzLjY5MSAyMy4wODEgMTUuMDg2IDI2LjEzMiAxLjgzMi40OTIgMy42ODguNzI3IDUuNTIzLjcyNyA5LjQxIDAgMTguMDQ3LTYuMjc0IDIwLjU4Ni0xNS44MDlsMjQuMzY0LTkwLjg2aDc5LjM1OWMxMS43NzcgMCAyMS4zMzYtOS41MzQgMjEuMzM2LTIxLjMzMXMtOS41NTktMjEuMzMyLTIxLjMzNi0yMS4zMzJIMzM3LjQzbDM0LjMyNC0xMjhINDQ4YzExLjc3NyAwIDIxLjMzMi05LjUzNSAyMS4zMzItMjEuMzM2IDAtMTEuNzk3LTkuNTU1LTIxLjMzMi0yMS4zMzItMjEuMzMyek0yOTMuMjQ2IDI3Ny41MDhIMTQxLjczOGwzNC4zMjQtMTI4aDE1MS41MTJ6bTAgMCIgZmlsbD0iIzgwODA4MCIgb3BhY2l0eT0iMSIgZGF0YS1vcmlnaW5hbD0iIzAwMDAwMCIgY2xhc3M9IiI+PC9wYXRoPjwvZz48L3N2Zz4=);
+}
+
+/* Rectangular 18x18 icon box for sidebar section headers */
+.sidebar-rect-icon {
+  width: 18px !important;
+  height: 18px !important;
+  border-radius: 0 !important;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Wrapper for sidebar rectangular icons with consistent left spacing */
+.sidebar-icon-wrapper {
+  margin-left: 10px;
+  margin-right: 0.25rem;
+  display: inline-flex;
+  align-items: center;
+}
+
+/* --- Shared form controls (uniform styling) --- */
+.form-label {
+  display: block;
+  font-size: 1rem; /* 16px */
+  font-weight: 500;
+  color: var(--color-text-primary);
+}
+
+.form-control {
+  width: 100%;
+  padding: 0.75rem 0.75rem; /* 12px top/bottom, 12px sides */
+  border: 1px solid #e5e7eb; /* gray-200 */
+  border-radius: 0.375rem; /* rounded-md */
+  background: #ffffff;
+  color: var(--color-text-primary);
+}
+
+.form-control:focus {
+  outline: none;
+  border-color: #db4c3f;
+  box-shadow: 0 0 0 2px rgba(219, 76, 63, 0.35);
+}
+
+.form-hint {
+  font-size: 0.875rem;
+  color: #666666;
+}
+/* Base styles */
+* {
+  box-sizing: border-box;
+}
+
+/* Enforce a maximum button height across all screen sizes */
+button {
+  max-height: 34px !important;
+}
+
+/* Sidebar list item buttons should also respect the cap */
+.sidebar button,
+.sidebar .w-full.flex.items-center {
+  max-height: 34px !important;
+}
+
+html, body {
+  font-family: 'Inter', system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  overflow: hidden;
+}
+
+/* RTL Support */
+[dir="rtl"] {
+  direction: rtl;
+}
+
+[dir="ltr"] {
+  direction: ltr;
+}
+
+/* Custom styles for Hebrew text */
+.hebrew-text {
+  font-family: 'Noto Sans Hebrew', 'Inter', system-ui, sans-serif;
+  direction: rtl;
+  text-align: right;
+}
+
+/* Todoist-style scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #ccc;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #999;
+}
+
+/* Focus styles */
+button:focus {
+  outline: none;
+}
+
+input:focus {
+  outline: none;
+}
+
+/* Custom animations */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.fade-in {
+  animation: fadeIn 0.2s ease-out;
+}
+
+/* Task hover effects */
+.task-hover:hover {
+  background-color: #fafafa;
+}
+
+/* Priority colors matching Todoist */
+.priority-1 {
+  color: #d1453b;
+  border-color: #d1453b;
+}
+
+.priority-2 {
+  color: #eb8909;
+  border-color: #eb8909;
+}
+
+.priority-3 {
+  color: #246fe0;
+  border-color: #246fe0;
+}
+
+.priority-4 {
+  color: #666;
+  border-color: #ddd;
+}
+
+/* Todoist brand colors */
+.todoist-red {
+  background-color: #db4c3f;
+}
+
+.todoist-red:hover {
+  background-color: #c53030;
+}
+
+/* Smooth transitions */
+.transition-all {
+  transition: all 0.15s ease-in-out;
+}
+
+/* Custom button styles */
+.btn-primary {
+  @apply bg-[#db4c3f] hover:bg-[#c53030] text-white font-medium py-2 px-4 rounded-md transition-colors;
+}
+
+.btn-secondary {
+  @apply bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 font-medium py-2 px-4 rounded-md transition-colors;
+}
+
+/* Sidebar styles */
+.sidebar-nav {
+  @apply text-sm text-[#666] hover:text-[#202020] hover:bg-gray-200 rounded-md transition-colors;
+}
+
+.sidebar-nav.active {
+  @apply bg-[#ffefe5] text-[#db4c3f] font-medium;
+}
+
+/* Task styles */
+.task-checkbox {
+  @apply w-4 h-4 rounded-full border-2 border-[#ddd] hover:border-[#ccc] transition-colors flex items-center justify-center;
+}
+
+.task-checkbox.completed {
+  @apply bg-[#999] border-[#999];
+}
+
+/* Global circle styles */
+.circle-none {
+  background-color: transparent;
+  border: 1px solid #374151;
+}
+
+.circle-none:hover {
+  background-color: #f3f4f6;
+}
+
+/* Header after pseudo-element for lines */
+.header-line:after {
+  content: "";
+  left: 12px; /* ml-3 equivalent */
+  right: 0px; /* mr-0 equivalent */
+  border-bottom: 1px solid #e5e7eb; /* bg-gray-200 equivalent */
+  display: block;
+  position: absolute;
+  bottom: 0;
+}
+
+/* Task line after pseudo-element */
+.task-line {
+  padding-bottom: 8px; /* tiny fixed spacing between tasks */
+  padding: 8px;
+}
+.task-line:after {
+  content: "";
+  left: 12px; /* ml-3 equivalent */
+  right: 0px; /* mr-0 equivalent */
+  border-bottom: 1px solid #e5e7eb; /* bg-gray-200 equivalent */
+  display: block;
+  position: absolute;
+  bottom: -1px; /* -mt-1 equivalent */
+}
+
+/* Task line before pseudo-element for top border */
+.task-line:before {
+  content: "";
+  left: 12px; /* align with checkbox indent */
+  right: 0px;
+  border-top: 1px solid #e5e7eb;
+  display: block;
+  position: absolute;
+  top: 0; /* top edge */
+}
+
+/* Suppress top border for the first task in a list */
+.task-line.first-task:before {
+  display: none;
+}
+
+/* Ensure circular checkboxes remain perfectly round at any zoom */
+button.w-5.h-5.rounded-full.border.flex-shrink-0,
+button.w-5.h-5.rounded-full {
+  width: 20px !important; /* fixed pixel size prevents zoom distortion */
+  height: 20px !important;
+  min-width: 20px !important;
+  min-height: 20px !important;
+  max-width: 20px !important;
+  max-height: 20px !important;
+  border-radius: 50% !important; /* perfect circle */
+  flex-shrink: 0 !important;
+  flex-grow: 0 !important;
+  transform: translateZ(0); /* force GPU acceleration for crisp rendering */
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  will-change: transform; /* optimize for zoom changes */
+}
+
+/* Ensure checkmark icon stays centered and sized correctly */
+button.w-5.h-5.rounded-full svg {
+  width: 12px !important;
+  height: 12px !important;
+  flex-shrink: 0;
+}
+
+/* Additional zoom-safe properties for all circular elements */
+.task-checkbox,
+.circle-none {
+  transform: translateZ(0);
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+}
+
+/* React Multi Date Picker Styles */
+.rmdp-calendar {
+  direction: rtl !important;
+  font-family: 'Noto Sans Hebrew', 'Inter', system-ui, sans-serif !important;
+}
+
+.rmdp-calendar .rmdp-header {
+  direction: rtl !important;
+}
+
+.rmdp-calendar .rmdp-header-values {
+  direction: rtl !important;
+}
+
+.rmdp-calendar .rmdp-week-day {
+  color: var(--color-calendar-day-letters) !important;
+  font-weight: 500 !important;
+  font-size: 10px !important;
+}
+
+.rmdp-calendar .rmdp-day {
+  border-radius: 6px !important;
+  font-weight: 500 !important;
+  font-size: 13px !important;
+  color: var(--color-calendar-date) !important;
+  transition: all 0.2s ease-in-out !important;
+}
+
+/* Weekend dates (Friday and Saturday) - gray color */
+.rmdp-calendar .rmdp-day[data-day-of-week="5"],
+.rmdp-calendar .rmdp-day[data-day-of-week="6"],
+.rmdp-calendar .weekend-date {
+  color: var(--color-calendar-weekend) !important;
+}
+
+/* Custom calendar date styling classes */
+.calendar-date-number {
+  color: var(--color-calendar-date) !important;
+  font-size: 13px !important;
+}
+
+.calendar-weekend-date {
+  color: var(--color-calendar-weekend) !important;
+  font-size: 13px !important;
+}
+
+.calendar-day-header {
+  color: var(--color-calendar-day-letters) !important;
+  font-size: 10px !important;
+}
+
+/* Specific styling for calendar date picker in DatePickerDropdown */
+.calendar-date-picker .rmdp-week-day {
+  color: var(--color-calendar-day-letters) !important;
+  font-size: 10px !important;
+}
+
+.calendar-date-picker .rmdp-day {
+  color: var(--color-calendar-date) !important;
+  font-size: 13px !important;
+}
+
+/* Target Friday (שישי) and Saturday (שבת) dates specifically */
+.calendar-date-picker .rmdp-day:nth-child(6),
+.calendar-date-picker .rmdp-day:nth-child(7) {
+  color: var(--color-calendar-weekend) !important;
+}
+
+/* Alternative approach - target by day position in Hebrew calendar */
+.calendar-date-picker .rmdp-day[style*="grid-column: 6"],
+.calendar-date-picker .rmdp-day[style*="grid-column: 7"] {
+  color: var(--color-calendar-weekend) !important;
+}
+
+.rmdp-calendar .rmdp-day:hover {
+  background-color: #F3F4F6 !important;
+}
+
+.rmdp-calendar .rmdp-day.rmdp-selected {
+  background-color: #3B82F6 !important;
+  color: white !important;
+}
+
+.rmdp-calendar .rmdp-day.rmdp-today {
+  background-color: #FEF3C7 !important;
+  color: #D97706 !important;
+  font-weight: 600 !important;
+}
+
+.rmdp-calendar .rmdp-day.rmdp-today.rmdp-selected {
+  background-color: #3B82F6 !important;
+  color: white !important;
+}
+
+.rmdp-calendar .rmdp-arrow-container {
+  direction: ltr !important;
+}
+
+/* Responsive styles for different viewports and zoom levels */
+
+/* Ultra wide screens (1920px+) - 100% zoom */
+@media (min-width: 1920px) {
+  .sidebar-resize-handle {
+    width: 8px;
+  }
+}
+
+/* Desktop and large tablets (1280px - 1919px) - Normal zoom levels */
+@media (min-width: 1280px) and (max-width: 1919px) {
+  /* Normal responsive behavior */
+}
+
+/* Tablets and high zoom (1024px - 1279px) - ~150-175% zoom on 1920px screens */
+@media (min-width: 1024px) and (max-width: 1279px) {
+  .sidebar-resize-handle {
+    width: 8px;
+    opacity: 0.4 !important;
+  }
+  
+  /* Remove extra padding that affected buttons */
+  .sidebar-nav {
+    padding: 0; /* was 12px */
+  }
+}
+
+/* Small tablets and high zoom (768px - 1023px) - ~200% zoom on 1920px screens */
+
+/* React Big Calendar Hebrew RTL Styles */
+.rbc-calendar {
+  font-family: 'Noto Sans Hebrew', 'Inter', system-ui, sans-serif !important;
+  direction: rtl !important;
+}
+
+.rbc-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px;
+  margin-bottom: 0;
+  flex-direction: row-reverse; /* RTL: reverse toolbar layout */
+}
+
+.rbc-toolbar .rbc-toolbar-label {
+  font-family: 'Noto Sans Hebrew', 'Inter', system-ui, sans-serif !important;
+  font-size: 18px;
+  font-weight: 600;
+  text-align: center;
+  order: 2; /* RTL: center the label */
+}
+
+.rbc-toolbar .rbc-btn-group {
+  display: flex;
+  gap: 4px;
+}
+
+.rbc-toolbar .rbc-btn-group:first-child {
+  order: 3; /* RTL: nav buttons on left */
+}
+
+.rbc-toolbar .rbc-btn-group:last-child {
+  order: 1; /* RTL: view buttons on right */
+}
+
+.rbc-header {
+  font-family: 'Noto Sans Hebrew', 'Inter', system-ui, sans-serif !important;
+  text-align: center;
+  font-weight: 600;
+  padding: 8px;
+  border: 1px solid;
+}
+
+.rbc-month-view .rbc-header {
+  text-align: center;
+}
+
+.rbc-date-cell {
+  font-family: 'Noto Sans Hebrew', 'Inter', system-ui, sans-serif !important;
+  text-align: center;
+  padding: 4px;
+}
+
+.rbc-month-view .rbc-date-cell a {
+  display: block;
+  text-align: center;
+  padding: 4px;
+  text-decoration: none;
+}
+
+.rbc-event {
+  font-family: 'Noto Sans Hebrew', 'Inter', system-ui, sans-serif !important;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 500;
+  padding: 2px 4px;
+  cursor: pointer;
+}
+
+.rbc-event:focus {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+}
+
+/* Week and Day view time slots */
+.rbc-time-view .rbc-time-gutter .rbc-timeslot-group {
+  text-align: left; /* Keep times LTR */
+  direction: ltr;
+}
+
+.rbc-time-view .rbc-time-slot {
+  font-family: 'Noto Sans Hebrew', 'Inter', system-ui, sans-serif !important;
+}
+
+/* Month view date numbers */
+.rbc-button-link {
+  font-family: 'Noto Sans Hebrew', 'Inter', system-ui, sans-serif !important;
+}
+
+/* Dark mode specific calendar styles */
+:root.dark .rbc-calendar {
+  background: #1a1a1a;
+  color: #ffffff;
+}
+
+:root.dark .rbc-header {
+  background: #2d2d2d;
+  color: #ffffff;
+  border-color: #404040;
+}
+
+:root.dark .rbc-month-view,
+:root.dark .rbc-time-view {
+  background: #1a1a1a;
+  border-color: #404040;
+}
+
+:root.dark .rbc-date-cell {
+  color: #ffffff;
+}
+
+:root.dark .rbc-off-range-bg {
+  background: #2d2d2d;
+}
+
+:root.dark .rbc-today {
+  background: #0d47a1;
+}
+
+:root.dark .rbc-toolbar {
+  background: #2d2d2d;
+  border-bottom: 1px solid #404040;
+}
+
+:root.dark .rbc-toolbar button {
+  background: #404040;
+  color: #ffffff;
+  border: 1px solid #666666;
+}
+
+:root.dark .rbc-toolbar button:hover {
+  background: #555555;
+}
+
+:root.dark .rbc-toolbar button.rbc-active {
+  background: #3b82f6;
+  color: white;
+  border-color: #3b82f6;
+}
+
+:root.dark .rbc-toolbar-label {
+  color: #ffffff;
+}
+
+:root.dark .rbc-day-bg:hover {
+  background: #333333;
+}
+
+:root.dark .rbc-timeslot-group {
+  border-bottom: 1px solid #404040;
+}
+
+:root.dark .rbc-time-slot {
+  border-top: 1px solid #404040;
+}
+
+:root.dark .rbc-time-gutter .rbc-timeslot-group {
+  border-right: 1px solid #404040;
+}
+
+:root.dark .rbc-time-content {
+  border-left: 1px solid #404040;
+}
+
+:root.dark .rbc-allday-cell {
+  background: #2d2d2d;
+  border-bottom: 1px solid #404040;
+}
+@media (min-width: 768px) and (max-width: 1023px) {
+  /* Sidebar auto-hides at this breakpoint */
+  .main-content {
+    width: 100% !important;
+  }
+  
+  /* Larger touch targets */
+  button {
+    padding: 12px;
+  }
+  
+  /* Adjust spacing */
+  .task-list {
+    padding: 16px;
+  }
+  
+  /* Floating button becomes more prominent */
+  .floating-sidebar-btn {
+    scale: 1.1;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
+}
+
+/* Mobile phones and very high zoom (0px - 767px) */
+@media (max-width: 767px) {
+  /* Main container stays as flex row - sidebar overlays, doesn't push */
+  .main-container {
+    flex-direction: row;
+    min-height: 0; /* allow children to manage overflow */
+  }
+  
+  /* Sidebar positioning - slides in from right (RTL) */
+  .sidebar {
+    position: fixed !important;
+    top: 0 !important;
+    right: -100% !important;
+    height: 100vh !important;
+    z-index: 100 !important;
+    transition: right 0.3s ease-in-out !important;
+    box-shadow: -4px 0 12px rgba(0, 0, 0, 0.15) !important;
+    transform: none !important; /* Override any transform */
+    will-change: right !important;
+  }
+  
+  .sidebar.visible {
+    right: 0 !important;
+  }
+  
+  /* Force RTL direction for mobile sidebar */
+  @media (max-width: 767px) {
+    .sidebar {
+      direction: rtl !important;
+    }
+    
+    /* Ensure floating button is clickable on mobile */
+    .floating-sidebar-btn {
+      position: fixed !important;
+      top: 12px !important;
+      right: 12px !important;
+      z-index: 1000 !important;
+      background: transparent !important;
+      box-shadow: none !important;
+      border-radius: 0 !important;
+      padding: 8px !important;
+      min-height: auto !important;
+      width: auto !important;
+      height: auto !important;
+    }
+    
+    /* Make icon more visible on mobile */
+    .floating-sidebar-btn svg {
+      color: #333 !important;
+      filter: drop-shadow(0 1px 2px rgba(255,255,255,0.8));
+    }
+    
+    /* Make sidebar close button more prominent on mobile */
+    .sidebar button[title*="הסתר"] {
+      background: #f3f4f6 !important;
+      border: 1px solid #d1d5db !important;
+      padding: 8px !important;
+      border-radius: 6px !important;
+      min-height: 44px !important;
+      min-width: 44px !important;
+    }
+    
+    /* Improve sidebar user section spacing on mobile */
+    
+  }
+  
+  /* Overlay when sidebar is open on mobile */
+  .sidebar-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 90;
+  }
+  
+  /* Main content always stays full width - sidebar doesn't affect it */
+  .main-content {
+    width: 100% !important;
+    flex: 1;
+    position: relative;
+    overflow-y: auto; /* enable scrolling */
+    -webkit-overflow-scrolling: touch; /* smooth momentum scroll on iOS */
+  }
+  
+  /* Task list container sticks to right edge */
+  .task-list-container {
+    width: 100% !important;
+    max-width: none !important;
+    margin-right: 0 !important;
+    /* Align content with header title (px-14 => 3.5rem) */
+    padding-right: 3.5rem !important;
+    padding-left: 0 !important;
+  }
+
+  /* Stronger selector to override later rules */
+  .main-content .task-list-container {
+    padding-right: 3.5rem !important;
+    padding-left: 2rem !important;
+  }
+  
+  /* Larger touch targets for mobile */
+  input {
+    font-size: 16px; /* Prevent zoom on iOS */
+  }
+  
+  /* Mobile-optimized spacing */
+  .task-item {
+    padding: 16px 12px;
+    margin-bottom: 8px;
+  }
+  
+  /* Mobile typography adjustments */
+  /*.hebrew-text {
+    line-height: 1.6;
+  }*/
+  
+  /* Hide resize handle on mobile */
+  .sidebar-resize-handle {
+    display: none;
+  }
+  
+  /* Ensure content flows to edges on mobile */
+  .main-content > div {
+    width: 100% !important;
+    margin-right: 0 !important;
+  }
+  
+  /* Header title adjustments for mobile */
+  .main-content h1.hebrew-text {
+    font-size: 26px !important;
+  }
+  
+  /* Tasks align to right edge on mobile */
+  .task-list .task-item,
+  .task-container {
+    margin-left: 0;
+    margin-right: 0;
+    width: 100%;
+  }
+  
+  /* Mobile typography for task list */
+  .task-list .task-item {
+    /* Main task title text */
+    font-size: 14px !important;
+  }
+  
+  .task-list .task-item .hebrew-text {
+    font-size: 14px !important;
+  }
+  
+  /* Task text sizes on mobile (avoid overriding text-description color-only utility) */
+  .task-list .task-item .text-sm,
+  .task-list .task-item .text-gray-500,
+  .task-list .task-item .text-gray-400 {
+    font-size: 12px !important;
+  }
+  
+  /* Specific targeting for task elements */
+  .task-list span.text-sm,
+  .task-list .text-gray-500,
+  .task-list .text-gray-400 {
+    font-size: 12px !important;
+  }
+}
+
+/* Landscape mobile phones - button stays in top right */
+@media (max-width: 767px) and (orientation: landscape) {
+  /* Button positioning handled in main mobile styles above */
+}
+
+/* High DPI displays - better visual quality */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 2dppx) {
+  .sidebar-resize-handle {
+    border-radius: 1px;
+  }
+  
+  /* Sharper icons and borders */
+  .task-checkbox {
+    border-width: 1px;
+  }
+}
+
+/* Zoom level specific optimizations */
+@media (min-resolution: 1.5dppx) {
+  /* User is likely zoomed in - make UI elements slightly larger */
+  .text-sm {
+    font-size: 12px;
+  }
+  
+  .text-base {
+    font-size: 14px;
+  }
+}
+
+/* Dark mode mobile adjustments */
+@media (max-width: 767px) {
+  :root.dark .sidebar {
+    border-left: 1px solid #404040;
+  }
+  
+  :root.dark .sidebar-overlay {
+    background: rgba(0, 0, 0, 0.7);
+  }
+}
+
+/* Adaptive width system - smooth transitions for content shrinking */
+.main-content > div,
+.task-list-container {
+  transition: width 0.3s ease-out, margin-right 0.3s ease-out, margin-left 0.3s ease-out;
+  will-change: width, margin-right, margin-left;
+}
+
+/* Enhanced focus for narrowed content - only when significantly narrowed */
+@media (min-width: 1400px) {
+  .task-list-container {
+    /* Very subtle background distinction - no borders */
+    background: var(--color-main-bg);
+    border-radius: 6px;
+    padding: 0 8px;
+    margin-top: 4px;
+  }
+}
+
+/* Ultra-wide screen optimizations - more refined styling */
+@media (min-width: 1800px) {
+  .task-list-container {
+    /* Minimal shadow for ultra-wide screens */
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+    border-radius: 8px;
+    padding: 0 12px;
+    margin-top: 6px;
+  }
+}
+
+/* Ensure smooth responsive behavior during zoom changes */
+@media (min-width: 1024px) {
+  /* Better typography scaling for focused reading */
+  .task-list-container .hebrew-text {
+    line-height: 1.5;
+  }
+  /* Align main content with header title on desktop (px-24 -> 6rem) */
+  .task-list-container {
+    padding-right: 9rem !important; /* 20% closer to right vs px-24 */
+  }
+}
+
+/* Mobile: remove container styling for full-width experience */
+@media (max-width: 1023px) {
+  .task-list-container {
+    box-shadow: none !important;
+    border-radius: 0 !important;
+    /* Keep content aligned with header on tablets */
+    padding-right: 2rem !important; /* equals px-8 */
+    padding-left: 0 !important;
+    background: transparent !important;
+    margin-top: 0 !important;
+  }
+}
+
+/* Dark mode task list container styling - minimal */
+:root.dark .task-list-container {
+  background: var(--color-main-bg) !important;
+}
+
+/* Dark mode ultra-wide screen minimal shadow */
+@media (min-width: 1800px) {
+  :root.dark .task-list-container {
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15) !important;
+  }
+}
+
+/* Task Creation Modal Action Buttons */
+.task-action-btn {
+  font-size: 13px !important;
+  min-height: 0 !important;
+  height: 32px;
+  width: auto;
+  padding: 0 8px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  background: white;
+  color: #374151;
+  transition: all 0.15s ease-in-out;
+  cursor: pointer;
+}
+
+.task-action-btn:hover {
+  background-color: #f9fafb;
+}
+
+.task-action-btn:focus {
+  outline: none;
+}
+
+/* Mobile responsive adjustments for task action buttons */
+@media (max-width: 767px) {
+  .task-action-btn {
+    height: 36px;
+    padding: 0 14px;
+    font-size: 14px !important;
+  }
+}
+
+/* Dark mode for task action buttons */
+:root.dark .task-action-btn {
+  background: #374151;
+  border-color: #4b5563;
+  color: #f3f4f6;
+}
+
+:root.dark .task-action-btn:hover {
+  background-color: #4b5563;
+}
+
+/* Modal animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95) translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.2s ease-out;
+}
+
+.animate-scale-in {
+  animation: scaleIn 0.2s ease-out;
+}
+
+/* Modal smooth entrance */
+.modal-container {
+  opacity: 0;
+  transform: translateY(20px) scale(0.95);
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.modal-container.modal-visible {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+/* Secondary hover background utility */
+.bg-secondary-hover {
+  background-color: var(--color-secondary-hover);
+}

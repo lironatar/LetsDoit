@@ -1,0 +1,59 @@
+════════════════════════════════════════════════════════════
+  🚀 TodoFast - QUICK START CHEAT SHEET
+════════════════════════════════════════════════════════════
+
+╔═══════════════════════════════════════════════════════════╗
+║  🎯 DAILY WORKFLOW (3 Commands)                           ║
+╚═══════════════════════════════════════════════════════════╝
+
+1️⃣  START-EVERYTHING.bat
+    ↳ Starts ngrok + backend + frontend
+    ↳ Wait 15 seconds for startup
+
+2️⃣  update-ngrok-urls.bat
+    ↳ Auto-configures all files
+    ↳ Shows URLs for Google OAuth
+
+3️⃣  Update Google OAuth Console
+    ↳ https://console.cloud.google.com/apis/credentials
+    ↳ Add the URLs shown in step 2
+
+4️⃣  Close windows and rerun START-EVERYTHING.bat
+    ↳ Needed for config changes to take effect
+
+5️⃣  Access your ngrok URL!
+    ↳ Works from ANY device, ANYWHERE
+
+════════════════════════════════════════════════════════════
+
+╔═══════════════════════════════════════════════════════════╗
+║  🛑 END OF DAY                                            ║
+╚═══════════════════════════════════════════════════════════╝
+
+   STOP-EVERYTHING.bat
+   ↳ Stops all services cleanly
+
+════════════════════════════════════════════════════════════
+
+╔═══════════════════════════════════════════════════════════╗
+║  📊 MONITORING                                            ║
+╚═══════════════════════════════════════════════════════════╝
+
+   ngrok Dashboard:   http://localhost:4040
+   Backend Logs:      "TodoFast Backend" window
+   Frontend Logs:     "TodoFast Frontend" window
+
+════════════════════════════════════════════════════════════
+
+╔═══════════════════════════════════════════════════════════╗
+║  ⚡ LOCAL DEVELOPMENT (No external access needed)        ║
+╚═══════════════════════════════════════════════════════════╝
+
+   Just use: start-both.bat
+   Access:   http://localhost:5173
+
+════════════════════════════════════════════════════════════
+
+Need help? Read: EASY-START-GUIDE.md
+
+════════════════════════════════════════════════════════════

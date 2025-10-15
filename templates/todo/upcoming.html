@@ -1,0 +1,214 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}עתידיות - TodoFast{% endblock %}
+
+{% block content %}
+<div class="container-fluid p-4" x-data="todoApp()">
+    <div class="row">
+        <div class="col-12">
+            <!-- Header -->
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h1 class="h2 mb-1" style="color: var(--text-color);">עתידיות</h1>
+                    <p class="text-muted mb-0">
+                        {% if tasks_by_date %}
+                            {{ tasks_by_date|length }} ימים עם משימות
+                        {% else %}
+                            אין משימות עתידיות
+                        {% endif %}
+                    </p>
+                </div>
+                <div class="d-flex gap-2">
+                    <button class="btn btn-outline-secondary" 
+                            x-data @click="$dispatch('show-add-task-modal')">
+                        <i class="fas fa-plus me-2"></i>
+                        הוסף משימה
+                    </button>
+                    <div class="dropdown">
+                        <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-calendar-alt me-2"></i>
+                            תצוגה
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="#"><i class="fas fa-list me-2"></i>רשימה</a></li>
+                            <li><a class="dropdown-item" href="#"><i class="fas fa-calendar me-2"></i>לוח שנה</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Upcoming Tasks by Date -->
+            {% if tasks_by_date %}
+                {% for date, tasks in tasks_by_date.items %}
+                    <div class="date-section mb-4">
+                        <!-- Date Header -->
+                        <div class="date-header mb-3 pb-2 border-bottom" style="border-color: var(--border-color)!important;">
+                            <h5 class="mb-1" style="color: var(--text-color);">
+                                {% now "Y-m-d" as today %}
+                                {% if date|date:"Y-m-d" == today|date:"Y-m-d" %}
+                                    היום
+                                {% elif date|date:"Y-m-d" == tomorrow %}
+                                    מחר
+                                {% else %}
+                                    {{ date|date:"l, d בF Y" }}
+                                {% endif %}
+                            </h5>
+                            <p class="text-muted small mb-0">{{ tasks|length }} משימות</p>
+                        </div>
+                        
+                        <!-- Tasks for this date -->
+                        <div class="task-list">
+                            {% for task in tasks %}
+                                <div class="task-item p-3 mb-2" 
+                                     data-priority="{{ task.priority }}">
+                                    <div class="d-flex align-items-start">
+                                        <!-- Task Checkbox -->
+                                        <div class="task-checkbox me-3 mt-1">
+                                            <button class="btn btn-sm border-0 p-0" 
+                                                    @click="toggleTask({{ task.id }})"
+                                                    style="width: 20px; height: 20px; border-radius: 50%; border: 2px solid {{ task.get_priority_color }}!important;">
+                                                <i class="fas fa-check" style="font-size: 12px; color: {{ task.get_priority_color }}; opacity: 0;"></i>
+                                            </button>
+                                        </div>
+                                        
+                                        <!-- Task Content -->
+                                        <div class="task-content flex-grow-1">
+                                            <div class="d-flex justify-content-between align-items-start mb-1">
+                                                <h6 class="mb-1 fw-semibold" style="color: var(--text-color);">{{ task.title }}</h6>
+                                                <div class="task-actions d-flex gap-1 opacity-0">
+                                                    <button class="btn btn-sm btn-outline-secondary border-0" title="ערוך">
+                                                        <i class="fas fa-edit"></i>
+                                                    </button>
+                                                    <button class="btn btn-sm btn-outline-danger border-0" title="מחק"
+                                                            @click="deleteTask({{ task.id }})">
+                                                        <i class="fas fa-trash"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            
+                                            {% if task.description %}
+                                                <p class="text-muted small mb-2">{{ task.description }}</p>
+                                            {% endif %}
+                                            
+                                            <div class="d-flex align-items-center gap-3 small text-muted">
+                                                {% if task.project %}
+                                                    <span>
+                                                        <span class="project-color me-1" style="display: inline-block; width: 6px; height: 6px; border-radius: 50%; background-color: {{ task.project.color }};"></span>
+                                                        {{ task.project.name }}
+                                                    </span>
+                                                {% endif %}
+                                                
+                                                {% if task.due_date and task.due_time %}
+                                                    <span>
+                                                        <i class="fas fa-clock me-1"></i>
+                                                        {{ task.due_time|time:"H:i" }}
+                                                    </span>
+                                                {% endif %}
+                                                
+                                                {% if task.priority > 1 %}
+                                                    <span class="priority-badge" 
+                                                          style="background-color: {{ task.get_priority_color }}; color: white; padding: 2px 6px; border-radius: 10px; font-size: 10px;">
+                                                        {{ task.get_priority_display }}
+                                                    </span>
+                                                {% endif %}
+                                                
+                                                {% for label in task.labels.all %}
+                                                    <span class="label-tag" 
+                                                          style="background-color: {{ label.color }}; color: white; padding: 2px 6px; border-radius: 10px; font-size: 10px;">
+                                                        #{{ label.name }}
+                                                    </span>
+                                                {% endfor %}
+                                                
+                                                {% if task.is_recurring %}
+                                                    <span class="recurring-badge">
+                                                        <i class="fas fa-redo-alt me-1"></i>
+                                                        חוזר
+                                                    </span>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <!-- Empty State -->
+                <div class="text-center py-5">
+                    <div class="mb-3">
+                        <i class="fas fa-calendar-plus fa-3x text-muted"></i>
+                    </div>
+                    <h5 class="text-muted">אין משימות עתידיות</h5>
+                    <p class="text-muted">תוכל להוסיף משימות עם תאריכי יעד עתידיים</p>
+                    <button class="btn btn-primary" 
+                            x-data @click="$dispatch('show-add-task-modal')">
+                        <i class="fas fa-plus me-2"></i>
+                        הוסף משימה
+                    </button>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<style>
+    .task-item:hover .task-actions {
+        opacity: 1 !important;
+        transition: opacity 0.2s ease;
+    }
+    
+    .task-checkbox button:hover i {
+        opacity: 1 !important;
+    }
+    
+    .date-header {
+        position: sticky;
+        top: 0;
+        background-color: var(--bg-color);
+        z-index: 10;
+        padding-top: 1rem;
+    }
+    
+    .priority-badge, .label-tag {
+        font-weight: 500;
+    }
+    
+    .recurring-badge {
+        color: var(--info-color);
+        font-weight: 500;
+    }
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Add delete task function
+    window.deleteTask = async function(taskId) {
+        if (!confirm('האם אתה בטוח שברצונך למחוק משימה זו?')) {
+            return;
+        }
+        
+        try {
+            const response = await fetch(`/api/task/${taskId}/delete/`, {
+                method: 'DELETE',
+                headers: {
+                    'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+                }
+            });
+            
+            const data = await response.json();
+            
+            if (data.success) {
+                window.location.reload();
+            } else {
+                alert('שגיאה במחיקת המשימה');
+            }
+        } catch (error) {
+            alert('שגיאה במחיקת המשימה');
+            console.error(error);
+        }
+    };
+</script>
+{% endblock %}

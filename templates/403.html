@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>גישה נדחתה - TodoFast</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #ffa726 0%, #ff7043 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            direction: rtl;
+        }
+        
+        .error-container {
+            text-align: center;
+            color: white;
+            padding: 2rem;
+            max-width: 600px;
+        }
+        
+        .error-code {
+            font-size: 8rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+            text-shadow: 0 4px 8px rgba(0,0,0,0.3);
+        }
+        
+        .error-title {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+        
+        .error-message {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+            line-height: 1.6;
+        }
+        
+        .back-button {
+            display: inline-block;
+            padding: 12px 24px;
+            background-color: rgba(255,255,255,0.2);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            border: 2px solid rgba(255,255,255,0.3);
+            transition: all 0.3s ease;
+            font-size: 1.1rem;
+            margin: 0 8px;
+        }
+        
+        .back-button:hover {
+            background-color: rgba(255,255,255,0.3);
+            border-color: rgba(255,255,255,0.5);
+            transform: translateY(-2px);
+        }
+        
+        @media (max-width: 768px) {
+            .error-code {
+                font-size: 6rem;
+            }
+            .error-title {
+                font-size: 1.5rem;
+            }
+            .error-message {
+                font-size: 1rem;
+            }
+            .back-button {
+                display: block;
+                margin: 8px auto;
+                width: 200px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="error-container">
+        <div class="error-code">403</div>
+        <h1 class="error-title">הגישה נדחתה</h1>
+        <p class="error-message">
+            אין לך הרשאות לגשת לדף זה.<br>
+            אנא וודא שנכנסת לחשבון שלך או פנה למנהל המערכת.
+        </p>
+        <div>
+            <a href="/login/" class="back-button">התחברות</a>
+            <a href="/" class="back-button">חזרה לעמוד הבית</a>
+        </div>
+    </div>
+</body>
+</html>

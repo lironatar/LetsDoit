@@ -1,0 +1,397 @@
+/* TodoFast - Main CSS File */
+
+/* RTL and Hebrew Support */
+* {
+    direction: rtl;
+}
+
+body {
+    font-family: 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+    line-height: 1.6;
+}
+
+/* Custom Variables for Dark Mode */
+:root {
+    --primary-color: #db4035;
+    --secondary-color: #ff9933;
+    --success-color: #7ecc49;
+    --info-color: #14aaf5;
+    --warning-color: #fad000;
+    --danger-color: #db4035;
+    --light-color: #f8f9fa;
+    --dark-color: #212529;
+    --bg-color: #ffffff;
+    --sidebar-bg: #fafafa;
+    --text-color: #202020;
+    --border-color: #e1e5e9;
+    --hover-bg: #f3f3f3;
+}
+
+/* Dark Mode */
+[data-theme="dark"] {
+    --bg-color: #1f1f1f;
+    --sidebar-bg: #2a2a2a;
+    --text-color: #ffffff;
+    --border-color: #404040;
+    --hover-bg: #353535;
+    --light-color: #2a2a2a;
+}
+
+/* Base Styles */
+body {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    transition: all 0.3s ease;
+}
+
+/* Sidebar Styles - Todoist-like */
+.sidebar {
+    background-color: var(--sidebar-bg);
+    border-left: 1px solid var(--border-color);
+    height: 100vh;
+    position: sticky;
+    top: 0;
+    transition: all 0.3s ease;
+    box-shadow: 1px 0 3px rgba(0, 0, 0, 0.08);
+}
+
+.sidebar.collapsed {
+    width: 80px !important;
+}
+
+/* User Profile Section */
+.user-avatar {
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Add Task Button */
+.btn-primary {
+    background: linear-gradient(135deg, #db4035, #e74c3c);
+    border: none;
+    box-shadow: 0 2px 8px rgba(219, 64, 53, 0.25);
+    font-weight: 600;
+}
+
+.btn-primary:hover {
+    background: linear-gradient(135deg, #c23729, #d73527);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(219, 64, 53, 0.35);
+}
+
+/* Navigation Styles */
+.nav-link {
+    color: var(--text-color);
+    transition: all 0.2s ease;
+    border-radius: 8px;
+    margin-bottom: 2px;
+}
+
+.nav-link:hover {
+    background-color: var(--hover-bg);
+    color: var(--text-color);
+}
+
+.nav-link.active {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+/* Task Styles - Todoist-like */
+.task-item {
+    transition: all 0.2s ease;
+    background-color: var(--bg-color);
+    border: 1px solid transparent;
+    border-radius: 8px;
+    margin-bottom: 1px;
+}
+
+.task-item:hover {
+    background-color: var(--hover-bg);
+    border-color: var(--border-color);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.task-checkbox button {
+    transition: all 0.2s ease;
+    background: transparent;
+    border-radius: 50%;
+    position: relative;
+}
+
+.task-checkbox button:hover {
+    transform: scale(1.05);
+    background-color: rgba(219, 64, 53, 0.1);
+}
+
+.task-checkbox button:hover i {
+    opacity: 1;
+}
+
+/* Priority Styles */
+.task-item[data-priority="4"] {
+    border-left: 3px solid #db4035;
+}
+
+.task-item[data-priority="3"] {
+    border-left: 3px solid #ff9933;
+}
+
+.task-item[data-priority="2"] {
+    border-left: 3px solid #fad000;
+}
+
+/* Member Avatars */
+.member-avatars {
+    gap: -8px;
+}
+
+.member-avatar {
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+    font-weight: 600;
+    font-size: 11px;
+}
+
+.member-avatar:not(:first-child) {
+    margin-right: -8px;
+}
+
+/* Priority Colors */
+.priority-1 { border-color: #808080; }
+.priority-2 { border-color: #fad000; }
+.priority-3 { border-color: #ff9933; }
+.priority-4 { border-color: #db4035; }
+
+/* Project Colors */
+.project-color {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+}
+
+/* Form Styles */
+.form-control {
+    background-color: var(--bg-color);
+    border-color: var(--border-color);
+    color: var(--text-color);
+    direction: rtl;
+}
+
+.form-control:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.2rem rgba(219, 64, 53, 0.25);
+    background-color: var(--bg-color);
+    color: var(--text-color);
+}
+
+.form-select {
+    background-color: var(--bg-color);
+    border-color: var(--border-color);
+    color: var(--text-color);
+}
+
+/* Button Styles */
+.btn-primary {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+.btn-primary:hover {
+    background-color: #c23729;
+    border-color: #c23729;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(219, 64, 53, 0.3);
+}
+
+.btn-outline-secondary {
+    border-color: var(--border-color);
+    color: var(--text-color);
+}
+
+.btn-outline-secondary:hover {
+    background-color: var(--hover-bg);
+    border-color: var(--border-color);
+    color: var(--text-color);
+}
+
+/* Modal Styles */
+.modal-overlay {
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+}
+
+.modal-content {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+}
+
+/* Alert Styles */
+.alert {
+    border: none;
+    border-radius: 12px;
+}
+
+/* Badge Styles */
+.badge {
+    font-size: 0.75em;
+    font-weight: 500;
+}
+
+/* Card Styles */
+.card {
+    background-color: var(--bg-color);
+    border-color: var(--border-color);
+}
+
+/* Table Styles */
+.table {
+    color: var(--text-color);
+}
+
+.table th {
+    border-color: var(--border-color);
+}
+
+.table td {
+    border-color: var(--border-color);
+}
+
+/* Dropdown Styles */
+.dropdown-menu {
+    background-color: var(--bg-color);
+    border-color: var(--border-color);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.dropdown-item {
+    color: var(--text-color);
+}
+
+.dropdown-item:hover {
+    background-color: var(--hover-bg);
+    color: var(--text-color);
+}
+
+/* Animation and Transitions */
+.fade-in {
+    animation: fadeIn 0.3s ease-in;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.slide-in {
+    animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+    from { transform: translateX(-20px); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+}
+
+/* Scrollbar Styles */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--bg-color);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--border-color);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--text-color);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .sidebar {
+        position: fixed;
+        left: -300px;
+        z-index: 1000;
+    }
+    
+    .sidebar.show {
+        left: 0;
+    }
+    
+    .main-content {
+        margin-right: 0;
+    }
+}
+
+/* Print Styles */
+@media print {
+    .sidebar,
+    .task-actions,
+    .quick-add-task {
+        display: none !important;
+    }
+    
+    .main-content {
+        margin: 0 !important;
+    }
+}
+
+/* Accessibility */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+/* Focus Styles */
+.btn:focus,
+.form-control:focus,
+.form-select:focus {
+    box-shadow: 0 0 0 0.2rem rgba(219, 64, 53, 0.25);
+}
+
+/* Loading Spinner */
+.spinner {
+    border: 2px solid var(--border-color);
+    border-top: 2px solid var(--primary-color);
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Utility Classes */
+.text-primary { color: var(--primary-color) !important; }
+.text-secondary { color: var(--secondary-color) !important; }
+.text-success { color: var(--success-color) !important; }
+.text-info { color: var(--info-color) !important; }
+.text-warning { color: var(--warning-color) !important; }
+.text-danger { color: var(--danger-color) !important; }
+
+.bg-primary { background-color: var(--primary-color) !important; }
+.bg-secondary { background-color: var(--secondary-color) !important; }
+.bg-success { background-color: var(--success-color) !important; }
+.bg-info { background-color: var(--info-color) !important; }
+.bg-warning { background-color: var(--warning-color) !important; }
+.bg-danger { background-color: var(--danger-color) !important; }
+
+/* Hebrew Font Support */
+@import url('https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;700&display=swap');
+
+body {
+    font-family: 'Heebo', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}

@@ -1,0 +1,65 @@
+TodoFast Production Readiness Checklist
+==========================================
+
+BEFORE DEPLOYMENT:
+☐ Copy .env.production to .env
+☐ Update SECRET_KEY in .env (generate new secure key)
+☐ Set DEBUG=False in .env
+☐ Update ALLOWED_HOSTS with your domain/IP addresses
+☐ Configure email settings (EMAIL_HOST_USER, EMAIL_HOST_PASSWORD)
+☐ Update Google OAuth credentials (production keys)
+☐ Test frontend build: cd frontend && npm run build:prod
+
+DEPLOYMENT PROCESS:
+☐ Run: deploy-prod.bat
+☐ Verify no errors during deployment
+☐ Check: check-prod-status.bat
+☐ Ensure all checks pass (DEBUG=False, secure SECRET_KEY, etc.)
+
+STARTING PRODUCTION:
+☐ Run: start-prod.bat
+☐ Test website functionality in browser
+☐ Check logs/django.log for any startup errors
+☐ Test user registration and login
+☐ Test task creation and management
+☐ Test Google OAuth integration
+
+SECURITY VERIFICATION:
+☐ Confirm DEBUG=False is working (no debug toolbar)
+☐ Test custom error pages (404, 500, 403)
+☐ Verify HTTPS redirect (if SSL configured)
+☐ Check security headers in browser dev tools
+☐ Ensure database file has restricted permissions
+
+MONITORING SETUP:
+☐ Monitor logs/django.log for application logs
+☐ Monitor logs/errors.log for error tracking
+☐ Set up log rotation schedule
+☐ Plan regular database backups
+☐ Document server restart procedures
+
+PERFORMANCE CHECKS:
+☐ Test page load speeds
+☐ Verify static files are served efficiently
+☐ Check frontend bundle sizes are optimized
+☐ Monitor memory usage during peak load
+☐ Test concurrent user scenarios
+
+POST-DEPLOYMENT:
+☐ Update DNS records (if needed)
+☐ Configure SSL certificate (recommended)
+☐ Set up monitoring alerts
+☐ Document rollback procedures
+☐ Plan maintenance windows
+
+BACKUP STRATEGY:
+☐ Regular database backups (db.sqlite3)
+☐ Media files backup (media/ folder)
+☐ Environment configuration backup (.env)
+☐ Test backup restoration process
+
+NOTES:
+- Keep .env.example updated with any new environment variables
+- Update PRODUCTION_DEPLOYMENT_GUIDE.md with any custom changes
+- Document any custom configurations for future reference
+- Consider migrating to PostgreSQL for larger deployments

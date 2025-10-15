@@ -1,0 +1,535 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ project.name }} - TodoFast{% endblock %}
+
+{% block content %}
+<div class="container-fluid p-4" x-data="todoApp()">
+    <div class="row">
+        <div class="col-12">
+            <!-- Project Header -->
+            <div class="project-header mb-4">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div class="d-flex align-items-center">
+                        <span class="project-color me-3" 
+                              style="display: inline-block; width: 16px; height: 16px; border-radius: 4px; background-color: {{ project.color }};"></span>
+                        <div>
+                            <h1 class="h2 mb-1 fw-bold" style="color: var(--text-color);">{{ project.name }}</h1>
+                            <div class="d-flex align-items-center gap-3 text-muted">
+                                <span>{{ project_tasks|length }} משימות פעילות</span>
+                                <span>•</span>
+                                <span>{{ project.members.count|add:1 }} חברים</span>
+                                {% if project.description %}
+                                    <span>•</span>
+                                    <span>{{ project.description }}</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="d-flex gap-2 align-items-center">
+                        <!-- Project Members -->
+                        <div class="d-flex align-items-center me-3">
+                            <div class="member-avatars d-flex">
+                                <!-- Project Owner -->
+                                <div class="member-avatar bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-1" 
+                                     style="width: 32px; height: 32px; font-size: 12px; border: 2px solid white;"
+                                     title="{{ project.owner.get_full_name|default:project.owner.username }} (בעלים)">
+                                    {{ project.owner.first_name|first|default:project.owner.username|first }}
+                                </div>
+                                <!-- Project Members -->
+                                {% for member in project.members.all|slice:":4" %}
+                                    <div class="member-avatar bg-secondary text-white rounded-circle d-flex align-items-center justify-content-center me-1" 
+                                         style="width: 32px; height: 32px; font-size: 12px; border: 2px solid white;"
+                                         title="{{ member.get_full_name|default:member.username }}">
+                                        {{ member.first_name|first|default:member.username|first }}
+                                    </div>
+                                {% endfor %}
+                                {% if project.members.count > 4 %}
+                                    <div class="member-avatar bg-light text-dark rounded-circle d-flex align-items-center justify-content-center" 
+                                         style="width: 32px; height: 32px; font-size: 10px; border: 2px solid white;">
+                                        +{{ project.members.count|add:-4 }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            {% if project.owner == user %}
+                                <button class="btn btn-sm btn-outline-primary ms-2" 
+                                        x-data @click="$dispatch('show-add-member-modal')">
+                                    <i class="fas fa-user-plus"></i>
+                                </button>
+                            {% endif %}
+                        </div>
+                        
+                        <!-- Action Buttons -->
+                        <button class="btn btn-primary" 
+                                x-data @click="$dispatch('show-add-task-modal')">
+                            <i class="fas fa-plus me-2"></i>
+                            הוסף משימה
+                        </button>
+                        <div class="dropdown">
+                            <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                                <i class="fas fa-ellipsis-h"></i>
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="#"><i class="fas fa-edit me-2"></i>ערוך פרויקט</a></li>
+                                {% if project.owner == user %}
+                                    <li><a class="dropdown-item" href="#" @click="$dispatch('show-add-member-modal')"><i class="fas fa-users me-2"></i>ניהול חברים</a></li>
+                                {% endif %}
+                                <li><a class="dropdown-item" href="#"><i class="fas fa-chart-line me-2"></i>דוחות</a></li>
+                                <li><a class="dropdown-item" href="#"><i class="fas fa-archive me-2"></i>ארכב פרויקט</a></li>
+                                {% if project.owner == user %}
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li><a class="dropdown-item text-danger" href="#"><i class="fas fa-trash me-2"></i>מחק פרויקט</a></li>
+                                {% endif %}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Project Description -->
+            {% if project.description %}
+                <div class="alert alert-light border-0 mb-4" style="background-color: var(--hover-bg); border-right: 4px solid {{ project.color }}!important;">
+                    <p class="mb-0">{{ project.description }}</p>
+                </div>
+            {% endif %}
+            
+            <!-- Project Stats -->
+            <div class="row mb-4">
+                <div class="col-md-3 col-6">
+                    <div class="stat-card p-3 rounded-3 border text-center" style="border-color: var(--border-color)!important;">
+                        <i class="fas fa-tasks fa-2x mb-2" style="color: {{ project.color }};"></i>
+                        <h4 class="mb-1">{{ project_tasks|length }}</h4>
+                        <p class="text-muted small mb-0">משימות פעילות</p>
+                    </div>
+                </div>
+                <div class="col-md-3 col-6">
+                    <div class="stat-card p-3 rounded-3 border text-center" style="border-color: var(--border-color)!important;">
+                        <i class="fas fa-check-circle fa-2x mb-2 text-success"></i>
+                        <h4 class="mb-1">0</h4>
+                        <p class="text-muted small mb-0">הושלמו השבוע</p>
+                    </div>
+                </div>
+                <div class="col-md-3 col-6">
+                    <div class="stat-card p-3 rounded-3 border text-center" style="border-color: var(--border-color)!important;">
+                        <i class="fas fa-clock fa-2x mb-2 text-warning"></i>
+                        <h4 class="mb-1">{{ project_tasks|length }}</h4>
+                        <p class="text-muted small mb-0">בהמתנה</p>
+                    </div>
+                </div>
+                <div class="col-md-3 col-6">
+                    <div class="stat-card p-3 rounded-3 border text-center" style="border-color: var(--border-color)!important;">
+                        <i class="fas fa-users fa-2x mb-2 text-info"></i>
+                        <h4 class="mb-1">{{ project.members.count|add:1 }}</h4>
+                        <p class="text-muted small mb-0">חברים</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Project Tasks -->
+            {% if project_tasks %}
+                <div class="task-section">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h5 class="mb-0">משימות הפרויקט</h5>
+                        <div class="d-flex gap-2">
+                            <div class="dropdown">
+                                <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                                    <i class="fas fa-filter me-1"></i>
+                                    מסנן
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" href="#">הכל</a></li>
+                                    <li><a class="dropdown-item" href="#">עדיפות גבוהה</a></li>
+                                    <li><a class="dropdown-item" href="#">עם תאריך יעד</a></li>
+                                    <li><a class="dropdown-item" href="#">ללא תאריך יעד</a></li>
+                                </ul>
+                            </div>
+                            <div class="dropdown">
+                                <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                                    <i class="fas fa-sort me-1"></i>
+                                    מיון
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" href="#">לפי תאריך יצירה</a></li>
+                                    <li><a class="dropdown-item" href="#">לפי תאריך יעד</a></li>
+                                    <li><a class="dropdown-item" href="#">לפי עדיפות</a></li>
+                                    <li><a class="dropdown-item" href="#">לפי שם</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="task-list">
+                        {% for task in project_tasks %}
+                                <div class="task-item p-3 mb-2" 
+                                     data-priority="{{ task.priority }}">
+                                <div class="d-flex align-items-start">
+                                    <!-- Task Checkbox -->
+                                    <div class="task-checkbox me-3 mt-1">
+                                        <button class="btn btn-sm border-0 p-0" 
+                                                @click="toggleTask({{ task.id }})"
+                                                style="width: 20px; height: 20px; border-radius: 50%; border: 2px solid {{ task.get_priority_color }}!important;">
+                                            <i class="fas fa-check" style="font-size: 12px; color: {{ task.get_priority_color }}; opacity: 0;"></i>
+                                        </button>
+                                    </div>
+                                    
+                                    <!-- Task Content -->
+                                    <div class="task-content flex-grow-1">
+                                        <div class="d-flex justify-content-between align-items-start mb-1">
+                                            <h6 class="mb-1 fw-semibold" style="color: var(--text-color);">{{ task.title }}</h6>
+                                            <div class="task-actions d-flex gap-1 opacity-0">
+                                                <button class="btn btn-sm btn-outline-secondary border-0" title="ערוך">
+                                                    <i class="fas fa-edit"></i>
+                                                </button>
+                                                {% if task.assignee != user %}
+                                                    <button class="btn btn-sm btn-outline-info border-0" title="הקצה לי">
+                                                        <i class="fas fa-user-plus"></i>
+                                                    </button>
+                                                {% endif %}
+                                                <button class="btn btn-sm btn-outline-danger border-0" title="מחק"
+                                                        @click="deleteTask({{ task.id }})">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                        
+                                        {% if task.description %}
+                                            <p class="text-muted small mb-2">{{ task.description }}</p>
+                                        {% endif %}
+                                        
+                                        <div class="d-flex align-items-center gap-3 small text-muted">
+                                            {% if task.assignee %}
+                                                <span>
+                                                    <i class="fas fa-user me-1"></i>
+                                                    {{ task.assignee.get_full_name|default:task.assignee.username }}
+                                                </span>
+                                            {% endif %}
+                                            
+                                            {% if task.due_date %}
+                                                <span class="{% if task.is_overdue %}text-danger{% elif task.is_today %}text-success{% else %}text-muted{% endif %}">
+                                                    <i class="fas fa-calendar me-1"></i>
+                                                    {% if task.is_overdue %}
+                                                        באיחור - {{ task.due_date|date:"d/m/Y H:i" }}
+                                                    {% elif task.is_today %}
+                                                        היום - {{ task.due_date|date:"H:i" }}
+                                                    {% else %}
+                                                        {{ task.due_date|date:"d/m/Y H:i" }}
+                                                    {% endif %}
+                                                </span>
+                                            {% endif %}
+                                            
+                                            {% if task.priority > 1 %}
+                                                <span class="priority-badge" 
+                                                      style="background-color: {{ task.get_priority_color }}; color: white; padding: 2px 6px; border-radius: 10px; font-size: 10px;">
+                                                    {{ task.get_priority_display }}
+                                                </span>
+                                            {% endif %}
+                                            
+                                            {% for label in task.labels.all %}
+                                                <span class="label-tag" 
+                                                      style="background-color: {{ label.color }}; color: white; padding: 2px 6px; border-radius: 10px; font-size: 10px;">
+                                                    #{{ label.name }}
+                                                </span>
+                                            {% endfor %}
+                                            
+                                            {% if task.is_recurring %}
+                                                <span class="recurring-badge">
+                                                    <i class="fas fa-redo-alt me-1"></i>
+                                                    חוזר
+                                                </span>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% else %}
+                <!-- Empty State -->
+                <div class="text-center py-5">
+                    <div class="mb-4">
+                        <i class="fas fa-folder-open fa-4x text-muted opacity-50"></i>
+                    </div>
+                    <h4 class="text-muted mb-3">אין משימות בפרויקט</h4>
+                    <p class="text-muted mb-4">התחל להוסיף משימות לפרויקט {{ project.name }}</p>
+                    
+                    <button class="btn btn-primary btn-lg" 
+                            x-data @click="$dispatch('show-add-task-modal')">
+                        <i class="fas fa-plus me-2"></i>
+                        הוסף משימה ראשונה
+                    </button>
+                    
+                    <!-- Project Tips -->
+                    <div class="mt-5 pt-4 border-top text-start" style="border-color: var(--border-color)!important;">
+                        <h6 class="mb-3">💡 טיפים לניהול פרויקט</h6>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="tip-card p-3 rounded-3 border" style="border-color: var(--border-color)!important;">
+                                    <i class="fas fa-lightbulb text-warning mb-2"></i>
+                                    <h6 class="small fw-semibold">פרק לתת-משימות</h6>
+                                    <p class="small text-muted mb-0">חלק משימות גדולות לחלקים קטנים</p>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="tip-card p-3 rounded-3 border" style="border-color: var(--border-color)!important;">
+                                    <i class="fas fa-clock text-info mb-2"></i>
+                                    <h6 class="small fw-semibold">קבע דדליינים</h6>
+                                    <p class="small text-muted mb-0">הוסף תאריכי יעד למעקב טוב יותר</p>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="tip-card p-3 rounded-3 border" style="border-color: var(--border-color)!important;">
+                                    <i class="fas fa-users text-success mb-2"></i>
+                                    <h6 class="small fw-semibold">שתף עם אחרים</h6>
+                                    <p class="small text-muted mb-0">הזמן חברי צוות לשיתוף פעולה</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+            
+            <!-- Quick Add Task -->
+            <div class="quick-add-task mt-4 p-3 rounded-3 border border-2 border-dashed" 
+                 style="border-color: {{ project.color }}!important;">
+                <div class="d-flex align-items-center">
+                    <span class="project-color me-3" 
+                          style="display: inline-block; width: 8px; height: 8px; border-radius: 50%; background-color: {{ project.color }};"></span>
+                    <input type="text" 
+                           class="form-control border-0 bg-transparent" 
+                           placeholder="הוסף משימה ל{{ project.name }}..."
+                           style="direction: rtl; box-shadow: none;"
+                           @click="$dispatch('show-add-task-modal')">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .task-item:hover .task-actions {
+        opacity: 1 !important;
+        transition: opacity 0.2s ease;
+    }
+    
+    .task-checkbox button:hover i {
+        opacity: 1 !important;
+    }
+    
+    .quick-add-task:hover {
+        background-color: var(--hover-bg);
+    }
+    
+    .stat-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        transition: all 0.2s ease;
+    }
+    
+    .tip-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        transition: all 0.2s ease;
+    }
+    
+    .priority-badge, .label-tag {
+        font-weight: 500;
+    }
+    
+    .recurring-badge {
+        color: var(--info-color);
+        font-weight: 500;
+    }
+</style>
+{% endblock %}
+
+<!-- Add Member Modal -->
+<div x-data="{ showAddMemberModal: false }" 
+     @show-add-member-modal.window="showAddMemberModal = true"
+     x-show="showAddMemberModal" 
+     x-cloak 
+     class="modal-overlay position-fixed top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center"
+     style="background-color: rgba(0,0,0,0.5); z-index: 1050;">
+    
+    <div @click.away="showAddMemberModal = false" 
+         class="modal-content bg-white rounded-3 p-4 mx-3"
+         style="width: 100%; max-width: 500px; background-color: var(--bg-color)!important; color: var(--text-color);">
+        
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h5 class="mb-0">ניהול חברי הפרויקט</h5>
+            <button @click="showAddMemberModal = false" 
+                    class="btn btn-sm btn-outline-secondary border-0">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        
+        <!-- Current Members -->
+        <div class="mb-4">
+            <h6 class="mb-3">חברים נוכחיים</h6>
+            
+            <!-- Project Owner -->
+            <div class="member-item d-flex align-items-center justify-content-between p-2 rounded mb-2" 
+                 style="background-color: var(--hover-bg);">
+                <div class="d-flex align-items-center">
+                    <div class="member-avatar bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-2" 
+                         style="width: 32px; height: 32px; font-size: 12px;">
+                        {{ project.owner.first_name|first|default:project.owner.username|first }}
+                    </div>
+                    <div>
+                        <div class="fw-semibold">{{ project.owner.get_full_name|default:project.owner.username }}</div>
+                        <small class="text-muted">{{ project.owner.email }}</small>
+                    </div>
+                </div>
+                <span class="badge bg-primary">בעלים</span>
+            </div>
+            
+            <!-- Project Members -->
+            {% for member in project.members.all %}
+                <div class="member-item d-flex align-items-center justify-content-between p-2 rounded mb-2" 
+                     style="background-color: var(--hover-bg);">
+                    <div class="d-flex align-items-center">
+                        <div class="member-avatar bg-secondary text-white rounded-circle d-flex align-items-center justify-content-center me-2" 
+                             style="width: 32px; height: 32px; font-size: 12px;">
+                            {{ member.first_name|first|default:member.username|first }}
+                        </div>
+                        <div>
+                            <div class="fw-semibold">{{ member.get_full_name|default:member.username }}</div>
+                            <small class="text-muted">{{ member.email }}</small>
+                        </div>
+                    </div>
+                    {% if project.owner == user %}
+                        <button class="btn btn-sm btn-outline-danger border-0" 
+                                @click="removeMember({{ member.id }})"
+                                title="הסר חבר">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    {% endif %}
+                </div>
+            {% empty %}
+                <p class="text-muted text-center py-3">אין חברים נוספים בפרויקט</p>
+            {% endfor %}
+        </div>
+        
+        <!-- Add New Member -->
+        {% if project.owner == user %}
+            <div class="border-top pt-3">
+                <h6 class="mb-3">הוסף חבר חדש</h6>
+                <form @submit.prevent="addMember()">
+                    <div class="mb-3">
+                        <label class="form-label">כתובת אימייל</label>
+                        <input type="email" 
+                               class="form-control" 
+                               placeholder="הזן כתובת אימייל של החבר החדש"
+                               x-model="newMemberEmail"
+                               style="direction: ltr; text-align: left;"
+                               required>
+                        <small class="text-muted">החבר חייב להיות רשום במערכת</small>
+                    </div>
+                    
+                    <div class="d-flex justify-content-end gap-2">
+                        <button type="button" 
+                                @click="showAddMemberModal = false" 
+                                class="btn btn-secondary">
+                            בטל
+                        </button>
+                        <button type="submit" class="btn btn-primary">
+                            הוסף חבר
+                        </button>
+                    </div>
+                </form>
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+{% block extra_js %}
+<script>
+    // Add delete task function
+    window.deleteTask = async function(taskId) {
+        if (!confirm('האם אתה בטוח שברצונך למחוק משימה זו?')) {
+            return;
+        }
+        
+        try {
+            const response = await fetch(`/api/task/${taskId}/delete/`, {
+                method: 'DELETE',
+                headers: {
+                    'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+                }
+            });
+            
+            const data = await response.json();
+            
+            if (data.success) {
+                window.location.reload();
+            } else {
+                alert('שגיאה במחיקת המשימה');
+            }
+        } catch (error) {
+            alert('שגיאה במחיקת המשימה');
+            console.error(error);
+        }
+    };
+    
+    // Extend Alpine.js todoApp data for member management
+    document.addEventListener('alpine:init', () => {
+        Alpine.data('todoApp', (existing) => ({
+            ...existing,
+            newMemberEmail: '',
+            
+            async addMember() {
+                if (!this.newMemberEmail.trim()) return;
+                
+                try {
+                    const response = await fetch('{% url "add_project_member" project.id %}', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+                        },
+                        body: JSON.stringify({ email: this.newMemberEmail })
+                    });
+                    
+                    const data = await response.json();
+                    
+                    if (data.success) {
+                        this.newMemberEmail = '';
+                        window.location.reload();
+                    } else {
+                        alert('שגיאה: ' + data.error);
+                    }
+                } catch (error) {
+                    alert('שגיאה בהוספת החבר');
+                    console.error(error);
+                }
+            },
+            
+            async removeMember(userId) {
+                if (!confirm('האם אתה בטוח שברצונך להסיר חבר זה מהפרויקט?')) {
+                    return;
+                }
+                
+                try {
+                    const response = await fetch(`{% url "remove_project_member" project.id 0 %}`.replace('0', userId), {
+                        method: 'POST',
+                        headers: {
+                            'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+                        }
+                    });
+                    
+                    const data = await response.json();
+                    
+                    if (data.success) {
+                        window.location.reload();
+                    } else {
+                        alert('שגיאה: ' + data.error);
+                    }
+                } catch (error) {
+                    alert('שגיאה בהסרת החבר');
+                    console.error(error);
+                }
+            }
+        }))
+    });
+</script>
+{% endblock %}
