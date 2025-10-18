@@ -1,0 +1,130 @@
+════════════════════════════════════════════════════════════
+  🔧 RAILWAY DEPLOYMENT FIX - RUN THESE COMMANDS
+════════════════════════════════════════════════════════════
+
+The deployment is failing because Railway needs a simpler build setup.
+
+✅ I've fixed the files:
+   - Removed nixpacks.toml (was causing pip issues)
+   - Updated railway.json (simplified build)
+   - Created build.sh (clean build script)
+
+═══════════════════════════════════════════════════════════
+
+📝 STEP 1: Initialize Git (if not done already)
+───────────────────────────────────────────────────────────
+
+git init
+git add .
+git commit -m "Initial commit with Railway fixes"
+
+
+📝 STEP 2: Create GitHub Repository
+───────────────────────────────────────────────────────────
+
+1. Go to: https://github.com/new
+2. Repository name: todofast
+3. Choose: Private or Public
+4. DON'T check "Initialize with README"
+5. Click: "Create repository"
+6. COPY the URL shown (e.g., https://github.com/YOUR-USERNAME/todofast.git)
+
+
+📝 STEP 3: Push to GitHub
+───────────────────────────────────────────────────────────
+
+Replace YOUR-USERNAME with your actual GitHub username:
+
+git remote add origin https://github.com/YOUR-USERNAME/todofast.git
+git branch -M main
+git push -u origin main
+
+(Enter your GitHub username and Personal Access Token when prompted)
+
+
+📝 STEP 4: Deploy on Railway
+───────────────────────────────────────────────────────────
+
+1. Go to: https://railway.app
+2. Sign in with GitHub
+3. Click: "New Project"
+4. Select: "Deploy from GitHub repo"
+5. Choose: your todofast repository
+6. Railway will automatically start deploying!
+
+
+📝 STEP 5: Add Environment Variables
+───────────────────────────────────────────────────────────
+
+In Railway Dashboard → Variables tab, add:
+
+SECRET_KEY=your-generated-secret-key
+DEBUG=False
+ALLOWED_HOSTS=lets-do-it.co.il,www.lets-do-it.co.il,.railway.app
+FRONTEND_URL=https://lets-do-it.co.il
+
+EMAIL_HOST=smtp.gmail.com
+EMAIL_PORT=587
+EMAIL_USE_TLS=True
+EMAIL_HOST_USER=your-email@gmail.com
+EMAIL_HOST_PASSWORD=your-app-password
+DEFAULT_FROM_EMAIL=TodoFast <noreply@lets-do-it.co.il>
+
+GOOGLE_OAUTH2_CLIENT_ID=your-client-id
+GOOGLE_OAUTH2_CLIENT_SECRET=your-client-secret
+
+SECURE_SSL_REDIRECT=True
+SECURE_HSTS_SECONDS=31536000
+LOG_LEVEL=INFO
+
+
+📝 STEP 6: Monitor Deployment
+───────────────────────────────────────────────────────────
+
+In Railway Dashboard:
+- Click on your project
+- Go to "Deployments" tab
+- Watch the build logs
+
+Expected build time: 3-5 minutes
+
+
+📝 STEP 7: Connect Your Domain
+───────────────────────────────────────────────────────────
+
+In Railway:
+1. Settings → Networking → Add Custom Domain
+2. Enter: lets-do-it.co.il
+3. Copy the CNAME target
+
+At domainthenet.com:
+1. DNS Settings
+2. Add CNAME: @ → railway-target
+3. Add CNAME: www → railway-target
+
+
+📝 STEP 8: Update Google OAuth
+───────────────────────────────────────────────────────────
+
+Go to: https://console.cloud.google.com/apis/credentials
+
+Add Authorized JavaScript origins:
+  https://lets-do-it.co.il
+  https://www.lets-do-it.co.il
+
+Add Authorized redirect URIs:
+  https://lets-do-it.co.il/api/auth/google-login/
+  https://www.lets-do-it.co.il/api/auth/google-login/
+
+Click SAVE
+
+
+════════════════════════════════════════════════════════════
+  ✅ YOUR APP WILL BE LIVE!
+════════════════════════════════════════════════════════════
+
+Visit: https://lets-do-it.co.il
+
+Need help? See: GITHUB-SETUP.md
+
+════════════════════════════════════════════════════════════
