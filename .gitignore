@@ -51,7 +51,6 @@ desktop.ini
 
 # Security
 security.log
-secrets.txt
 .env.production
 *.key
 *.pem
