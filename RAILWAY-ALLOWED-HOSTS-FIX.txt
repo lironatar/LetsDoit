@@ -1,0 +1,50 @@
+════════════════════════════════════════════════════════════
+  🔧 FIX ALLOWED_HOSTS ERROR
+════════════════════════════════════════════════════════════
+
+❌ ERROR: DisallowedHost at /
+Your Railway URL: letsdoit-production-6d29.up.railway.app
+is not in Django's ALLOWED_HOSTS setting.
+
+════════════════════════════════════════════════════════════
+
+✅ QUICK FIX - Update Railway Environment Variables:
+
+1. Go to Railway Dashboard
+2. Click your "LetsDoit" project
+3. Click "Variables" tab
+4. Find "ALLOWED_HOSTS" variable
+5. Update it to:
+
+ALLOWED_HOSTS=lets-do-it.co.il,www.lets-do-it.co.il,letsdoit-production-6d29.up.railway.app,.railway.app
+
+6. Click "Save" or "Update"
+
+════════════════════════════════════════════════════════════
+
+🚀 ALTERNATIVE - Push Code Fix:
+
+If you prefer to update the code:
+
+git add .env.production
+git commit -m "Add Railway domain to ALLOWED_HOSTS"
+git push
+
+════════════════════════════════════════════════════════════
+
+⏱️ AFTER THE FIX:
+
+Railway will automatically redeploy (takes 1-2 minutes)
+Then visit: https://letsdoit-production-6d29.up.railway.app
+
+Your app should load successfully! 🎉
+
+════════════════════════════════════════════════════════════
+
+📝 COMPLETE ALLOWED_HOSTS VALUE:
+
+lets-do-it.co.il,www.lets-do-it.co.il,letsdoit-production-6d29.up.railway.app,.railway.app
+
+Copy this exact value to Railway Variables → ALLOWED_HOSTS
+
+════════════════════════════════════════════════════════════
