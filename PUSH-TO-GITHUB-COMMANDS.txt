@@ -1,0 +1,96 @@
+════════════════════════════════════════════════════════════
+  📝 COPY AND RUN THESE COMMANDS ONE BY ONE
+════════════════════════════════════════════════════════════
+
+STEP 1: Initialize Git
+───────────────────────────────────────────────────────────
+cd "C:\Users\liron\OneDrive\שולחן העבודה\New folder\ToDoFast2"
+git init
+
+
+STEP 2: Add Files
+───────────────────────────────────────────────────────────
+git add .
+
+
+STEP 3: Commit Changes
+───────────────────────────────────────────────────────────
+git commit -m "Fix Railway deployment - remove UTF-8 issues"
+
+
+STEP 4: Create GitHub Repository
+───────────────────────────────────────────────────────────
+1. Go to: https://github.com/new
+2. Repository name: todofast
+3. Choose Private or Public
+4. DON'T check "Initialize with README"
+5. Click "Create repository"
+6. COPY the repository URL shown
+
+
+STEP 5: Connect to GitHub
+───────────────────────────────────────────────────────────
+Replace YOUR-USERNAME with your actual GitHub username:
+
+git remote add origin https://github.com/YOUR-USERNAME/todofast.git
+git branch -M main
+
+
+STEP 6: Push to GitHub
+───────────────────────────────────────────────────────────
+git push -u origin main
+
+If it asks for credentials:
+- Username: Your GitHub username
+- Password: Use a Personal Access Token (NOT your password!)
+
+Create token at: https://github.com/settings/tokens
+- Click "Generate new token (classic)"
+- Name: "TodoFast"
+- Check: "repo"
+- Generate and COPY the token
+- Use this as password
+
+
+STEP 7: Deploy on Railway
+───────────────────────────────────────────────────────────
+1. Go to: https://railway.app
+2. Sign up with GitHub
+3. New Project → Deploy from GitHub repo
+4. Select your todofast repository
+5. Add environment variables (see .env file for values)
+6. Wait for deployment
+
+
+STEP 8: Connect Domain
+───────────────────────────────────────────────────────────
+In Railway:
+- Settings → Networking → Add Custom Domain
+- Enter: lets-do-it.co.il
+- Copy the CNAME target
+
+At domainthenet.com:
+- Add CNAME record pointing @ to the Railway URL
+- Add CNAME record pointing www to the Railway URL
+
+
+STEP 9: Update Google OAuth
+───────────────────────────────────────────────────────────
+Go to: https://console.cloud.google.com/apis/credentials
+
+Add these Authorized JavaScript origins:
+- https://lets-do-it.co.il
+- https://www.lets-do-it.co.il
+
+Add these Authorized redirect URIs:
+- https://lets-do-it.co.il/api/auth/google-login/
+- https://www.lets-do-it.co.il/api/auth/google-login/
+
+Click SAVE
+
+
+════════════════════════════════════════════════════════════
+  ✅ DONE! Your app will be live at https://lets-do-it.co.il
+════════════════════════════════════════════════════════════
+
+For detailed guide, read: GITHUB-SETUP.md
