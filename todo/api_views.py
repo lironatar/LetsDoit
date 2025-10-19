@@ -2330,3 +2330,35 @@ def get_client_ip(request):
     else:
         ip = request.META.get('REMOTE_ADDR')
     return ip
+
+@api_view(['GET'])
+@permission_classes([permissions.AllowAny])
+def debug_auth_status(request):
+    """
+    Debug endpoint to check authentication status
+    Helps diagnose session and CORS issues on production
+    """
+    try:
+        is_authenticated = request.user.is_authenticated
+        session_data = {
+            'user_id': request.user.id if is_authenticated else None,
+            'username': request.user.username if is_authenticated else None,
+            'email': request.user.email if is_authenticated else None,
+        }
+        
+        return Response({
+            'is_authenticated': is_authenticated,
+            'user': session_data,
+            'session_key': request.session.session_key,
+            'cookies': dict(request.COOKIES),
+            'headers': {
+                'Host': request.META.get('HTTP_HOST'),
+                'Origin': request.META.get('HTTP_ORIGIN'),
+                'Referer': request.META.get('HTTP_REFERER'),
+            }
+        }, status=status.HTTP_200_OK)
+    except Exception as e:
+        return Response({
+            'error': str(e),
+            'is_authenticated': False
+        }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

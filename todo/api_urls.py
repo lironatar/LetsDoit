@@ -5,7 +5,7 @@ from .api_views import (
     NotificationViewSet, ProjectShareViewSet,
     register_user, login_user, google_login, verify_email, resend_verification,
     complete_onboarding_standalone, debug_user_names, fix_hebrew_user,
-    get_invitation_info, accept_invitation_on_registration, simple_db_check
+    get_invitation_info, accept_invitation_on_registration, simple_db_check, debug_auth_status
 )
 from .calendar_views import (
     calendar_connect, calendar_callback, calendar_status, calendar_disconnect,
@@ -51,4 +51,7 @@ urlpatterns = [
     
     # Database check endpoint
     path('db-check/', simple_db_check, name='simple_db_check'),
+    
+    # Debug endpoints
+    path('debug/auth-status/', debug_auth_status, name='debug_auth_status'),
 ]
