@@ -21,9 +21,14 @@ const GoogleLoginButton = ({ onGoogleLogin, disabled = false }) => {
   const renderGoogleButton = () => {
     if (!window.google || !googleButtonRef.current) return
 
+    // DEBUG: Log client_id to verify it's being injected
+    const clientId = import.meta.env.VITE_GOOGLE_OAUTH_CLIENT_ID
+    console.log('🔑 Google Client ID:', clientId ? `${clientId.substring(0, 20)}...` : 'MISSING!')
+    console.log('🌍 Current origin:', window.location.origin)
+
     try {
       window.google.accounts.id.initialize({
-        client_id: import.meta.env.VITE_GOOGLE_OAUTH_CLIENT_ID,
+        client_id: clientId,
         callback: handleCredentialResponse,
         auto_select: false,
         cancel_on_tap_outside: true
