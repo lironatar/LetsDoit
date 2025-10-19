@@ -16,10 +16,9 @@ from .forms import TaskForm, ProjectForm, LabelForm
 
 
 def index(request):
-    """Main dashboard view"""
-    if not request.user.is_authenticated:
-        return redirect('login')
-    return redirect('today')
+    """Serve React frontend"""
+    # Serve the React app's index.html
+    return render(request, 'frontend/index.html')
 
 
 @login_required
