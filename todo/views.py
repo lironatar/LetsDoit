@@ -17,8 +17,22 @@ from .forms import TaskForm, ProjectForm, LabelForm
 
 def index(request):
     """Serve React frontend"""
-    # Serve the React app's index.html
-    return render(request, 'frontend/index.html')
+    # Serve the React app's index.html directly from the dist folder
+    import os
+    from django.http import HttpResponse
+    from django.conf import settings
+    
+    # Read the built React index.html file
+    index_path = os.path.join(settings.BASE_DIR, 'frontend', 'dist', 'index.html')
+    
+    with open(index_path, 'r', encoding='utf-8') as f:
+        content = f.read()
+    
+    # Replace the title and add Hebrew RTL
+    content = content.replace('<html lang="en">', '<html lang="he" dir="rtl">')
+    content = content.replace('<title>Vite + React</title>', '<title>TodoFast - ניהול משימות</title>')
+    
+    return HttpResponse(content)
 
 
 @login_required
