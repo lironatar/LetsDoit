@@ -26,12 +26,7 @@ const GoogleLoginButton = ({ onGoogleLogin, disabled = false }) => {
         client_id: import.meta.env.VITE_GOOGLE_OAUTH_CLIENT_ID,
         callback: handleCredentialResponse,
         auto_select: false,
-        cancel_on_tap_outside: true,
-        // Fix for postMessage issues - ensure proper origin
-        use_fedcm_for_prompt: false,
-        context: 'signin',
-        // Add proper callback configuration
-        itp_support: true
+        cancel_on_tap_outside: true
       })
 
       // Clear any existing content
@@ -46,9 +41,7 @@ const GoogleLoginButton = ({ onGoogleLogin, disabled = false }) => {
           // width must be numeric per GSI; using container width instead
           text: 'signin_with',
           locale: 'he',
-          shape: 'rectangular',
-          // Fix for postMessage issues
-          width: '100%'
+          shape: 'rectangular'
         }
       )
     } catch (error) {
@@ -90,13 +83,6 @@ const GoogleLoginButton = ({ onGoogleLogin, disabled = false }) => {
   const handleCredentialResponse = async (response) => {
     try {
       console.log('Google credential response received:', response)
-      
-      // Validate response
-      if (!response || !response.credential) {
-        console.error('Invalid Google credential response:', response)
-        alert('שגיאה בתגובת Google. אנא נסה שוב.')
-        return
-      }
       
       // Decode the JWT token to get user info
       const payload = JSON.parse(atob(response.credential.split('.')[1]))
