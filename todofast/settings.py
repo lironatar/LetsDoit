@@ -154,6 +154,8 @@ CORS_ALLOWED_ORIGINS = [
     FRONTEND_URL,
     "http://localhost:5173",  # Always allow localhost for development
     "http://127.0.0.1:5173",
+    "https://lets-do-it.co.il",  # Custom production domain
+    "https://www.lets-do-it.co.il",  # Custom production domain (www)
     "https://letsdoit-production-6d29.up.railway.app",  # Railway production
     "https://74f26fdbdc7f.ngrok-free.app",  # ngrok frontend
     "https://00b0433173cf.ngrok-free.app",  # ngrok backend
@@ -166,6 +168,8 @@ CSRF_TRUSTED_ORIGINS = [
     FRONTEND_URL,
     "http://localhost:5173",
     "http://127.0.0.1:5173",
+    "https://lets-do-it.co.il",  # Custom production domain
+    "https://www.lets-do-it.co.il",  # Custom production domain (www)
     "https://letsdoit-production-6d29.up.railway.app",  # Railway production
     "https://74f26fdbdc7f.ngrok-free.app",  # ngrok frontend
     "https://00b0433173cf.ngrok-free.app",  # ngrok backend
