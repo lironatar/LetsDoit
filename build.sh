@@ -13,6 +13,13 @@ pip install -r requirements.txt
 echo ""
 echo "🎨 Step 2: Building frontend..."
 cd frontend
+
+# Export VITE environment variables for the frontend build
+# These are used by Vite to inject values at build time
+export VITE_GOOGLE_OAUTH_CLIENT_ID=${GOOGLE_OAUTH2_CLIENT_ID}
+
+echo "Using Google Client ID: ${VITE_GOOGLE_OAUTH_CLIENT_ID}"
+
 npm install --legacy-peer-deps
 npm run build:prod
 cd ..
