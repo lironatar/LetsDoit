@@ -154,6 +154,7 @@ CORS_ALLOWED_ORIGINS = [
     FRONTEND_URL,
     "http://localhost:5173",  # Always allow localhost for development
     "http://127.0.0.1:5173",
+    "https://letsdoit-production-6d29.up.railway.app",  # Railway production
     "https://74f26fdbdc7f.ngrok-free.app",  # ngrok frontend
     "https://00b0433173cf.ngrok-free.app",  # ngrok backend
 ]
@@ -165,6 +166,7 @@ CSRF_TRUSTED_ORIGINS = [
     FRONTEND_URL,
     "http://localhost:5173",
     "http://127.0.0.1:5173",
+    "https://letsdoit-production-6d29.up.railway.app",  # Railway production
     "https://74f26fdbdc7f.ngrok-free.app",  # ngrok frontend
     "https://00b0433173cf.ngrok-free.app",  # ngrok backend
 ]
@@ -202,10 +204,11 @@ SECURE_HSTS_INCLUDE_SUBDOMAINS = config('SECURE_HSTS_INCLUDE_SUBDOMAINS', defaul
 SECURE_HSTS_PRELOAD = config('SECURE_HSTS_PRELOAD', default=False, cast=bool)
 
 # Session Configuration
-SESSION_COOKIE_SECURE = config('SECURE_SSL_REDIRECT', default=False, cast=bool)  # Only over HTTPS when SSL is enabled
+SESSION_COOKIE_SECURE = config('SESSION_COOKIE_SECURE', default=False, cast=bool)  # Set to True when SSL is enabled
 SESSION_COOKIE_HTTPONLY = True
 SESSION_COOKIE_AGE = 86400  # 24 hours
-SESSION_SAVE_EVERY_REQUEST = False
+SESSION_SAVE_EVERY_REQUEST = True  # Persist session on every request
+SESSION_COOKIE_SAMESITE = 'Lax'  # Allow cross-origin session cookies
 
 # CSRF Configuration
 CSRF_COOKIE_SECURE = config('SECURE_SSL_REDIRECT', default=False, cast=bool)  # Only over HTTPS when SSL is enabled

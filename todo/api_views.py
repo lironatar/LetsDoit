@@ -1884,6 +1884,12 @@ def login_user(request):
                 from django.contrib.auth import login
                 login(request, authenticated_user)
                 
+                # Explicitly save the session to ensure the cookie is set
+                try:
+                    request.session.save()
+                except Exception as e:
+                    print(f"Session save error: {str(e)}")
+                
                 # Get or create user profile
                 profile, created = UserProfile.objects.get_or_create(
                     user=authenticated_user,
@@ -2040,6 +2046,12 @@ def google_login(request):
         # Log the user in
         from django.contrib.auth import login
         login(request, user)
+        
+        # Explicitly save the session to ensure the cookie is set
+        try:
+            request.session.save()
+        except Exception as e:
+            print(f"Session save error during Google login: {str(e)}")
         
         # Serialize profile data and add name field from account settings
         profile_data = UserProfileSerializer(profile).data
