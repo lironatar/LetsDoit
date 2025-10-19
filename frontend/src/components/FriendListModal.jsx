@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { XMarkIcon, UserGroupIcon, UserPlusIcon, CheckIcon, XCircleIcon, TrashIcon, EnvelopeIcon } from '@heroicons/react/24/outline'
 import { friendAPI } from '../services/api'
+import { getFullURL, getFetchOptions } from '../utils/apiUrl'
 
 function FriendListModal({ isOpen, onClose }) {
   const [friends, setFriends] = useState([])
@@ -175,12 +176,7 @@ function FriendListModal({ isOpen, onClose }) {
   const handleCheckDatabaseStatus = async () => {
     try {
       // Try the simple DB check first (no auth required)
-      const response = await fetch('http://localhost:8000/api/db-check/', {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        }
-      })
+      const response = await fetch(getFullURL('/api/db-check/'), getFetchOptions())
       
       console.log('Response status:', response.status)
       console.log('Response headers:', response.headers)
@@ -204,9 +200,7 @@ function FriendListModal({ isOpen, onClose }) {
 
   const handleDebugAllFriends = async () => {
     try {
-      const response = await fetch('/api/friends/debug_all_friends/', {
-        credentials: 'include'
-      })
+      const response = await fetch(getFullURL('/api/friends/debug_all_friends/'), getFetchOptions())
       
       if (!response.ok) {
         throw new Error(`HTTP ${response.status}: ${response.statusText}`)
@@ -225,14 +219,7 @@ function FriendListModal({ isOpen, onClose }) {
 
   const handleTestRegistration = async () => {
     try {
-      const response = await fetch('http://localhost:8000/api/friends/test_registration_logic/', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        credentials: 'include',
-        body: JSON.stringify({ email: 'pythonersnake@gmail.com' })
-      })
+      const response = await fetch(getFullURL('/api/friends/test_registration_logic/'), getFetchOptions())
       
       if (!response.ok) {
         throw new Error(`HTTP ${response.status}: ${response.statusText}`)

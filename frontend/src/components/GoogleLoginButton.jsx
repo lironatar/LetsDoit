@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
+import { getFullURL, getFetchOptions } from '../utils/apiUrl'
 
 const GoogleLoginButton = ({ onGoogleLogin, disabled = false }) => {
   const [isLoading, setIsLoading] = useState(false)
@@ -127,14 +128,8 @@ const GoogleLoginButton = ({ onGoogleLogin, disabled = false }) => {
       }
       
       // Send the credential to your backend
-      const backendResponse = await fetch('http://localhost:8000/api/auth/google-login/', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-        },
-        credentials: 'include',
-        body: JSON.stringify({
+      const backendResponse = await fetch(getFullURL('/auth/google-login/'), {
+        ...getFetchOptions('POST', {
           credential: response.credential,
           email: payload.email,
           name: payload.name,

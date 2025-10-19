@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { getFullURL, getFetchOptions } from '../utils/apiUrl'
 
 const EmailVerificationWelcome = ({ userEmail, onResendVerification }) => {
   const [isResending, setIsResending] = useState(false)
@@ -9,7 +10,7 @@ const EmailVerificationWelcome = ({ userEmail, onResendVerification }) => {
     setResendMessage('')
     
     try {
-      const response = await fetch('http://localhost:8000/api/auth/resend-verification/', {
+      const response = await fetch(getFullURL('/api/auth/resend-verification/'), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

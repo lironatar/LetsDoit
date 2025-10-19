@@ -1,4 +1,5 @@
 import React, { useState, useRef } from 'react'
+import { getFullURL, getFetchOptions } from '../utils/apiUrl'
 
 const OnboardingFlow = ({ userEmail, onComplete }) => {
   const [currentStep, setCurrentStep] = useState(1)
@@ -35,7 +36,7 @@ const OnboardingFlow = ({ userEmail, onComplete }) => {
         console.log('No CSRF token found in cookies')
       }
       
-      const response = await fetch('http://localhost:8000/api/auth/complete-onboarding/', {
+      const response = await fetch(getFullURL('/auth/complete-onboarding/'), {
         method: 'POST',
         headers: headers,
         credentials: 'include', // Include cookies for session authentication
@@ -136,7 +137,7 @@ const OnboardingFlow = ({ userEmail, onComplete }) => {
       const formDataToSend = new FormData()
       formDataToSend.append('avatar', file)
 
-      const response = await fetch('http://localhost:8000/api/users/upload_avatar/', {
+      const response = await fetch(getFullURL('/users/upload_avatar/'), {
         method: 'POST',
         body: formDataToSend,
         credentials: 'include'
@@ -176,7 +177,7 @@ const OnboardingFlow = ({ userEmail, onComplete }) => {
       }
       
       // Update user profile with onboarding data
-      const response = await fetch('http://localhost:8000/api/auth/complete-onboarding/', {
+      const response = await fetch(getFullURL('/auth/complete-onboarding/'), {
         method: 'POST',
         headers: headers,
         credentials: 'include', // Include cookies for session authentication

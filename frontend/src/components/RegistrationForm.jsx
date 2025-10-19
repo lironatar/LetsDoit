@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { EyeIcon, EyeSlashIcon } from '@heroicons/react/24/outline'
+import { getFullURL, getFetchOptions } from '../utils/apiUrl'
 
 const RegistrationForm = ({ onRegisterSuccess, onSwitchToLogin, isLoading, setIsLoading }) => {
   const [formData, setFormData] = useState({
@@ -31,7 +32,7 @@ const RegistrationForm = ({ onRegisterSuccess, onSwitchToLogin, isLoading, setIs
 
   const loadInvitationInfo = async (token) => {
     try {
-      const response = await fetch(`http://localhost:8000/api/invitations/info/?invite=${token}`)
+      const response = await fetch(getFullURL(`/invitations/info/?invite=${token}`))
       if (response.ok) {
         const data = await response.json()
         setInvitationInfo(data)
@@ -105,7 +106,7 @@ const RegistrationForm = ({ onRegisterSuccess, onSwitchToLogin, isLoading, setIs
     setIsLoading(true)
 
     try {
-      const response = await fetch('http://localhost:8000/api/auth/register/', {
+      const response = await fetch(getFullURL('/auth/register/'), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

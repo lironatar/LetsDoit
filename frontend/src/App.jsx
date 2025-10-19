@@ -21,6 +21,7 @@ import ToastContainer from './components/ToastContainer'
 import { ToastProvider, useToast } from './contexts/ToastContext'
 import { DarkModeProvider } from './contexts/DarkModeContext'
 import { taskAPI, projectAPI, teamAPI, userAPI } from './services/api'
+import { getFullURL, getFetchOptions } from './utils/apiUrl'
 import './index.css'
 
 // Helper function to get user-specific localStorage keys
@@ -378,7 +379,7 @@ function AppContent() {
       // Try registered user login via API
       try {
         // First, get CSRF token from Django
-        const csrfResponse = await fetch('http://localhost:8000/', {
+        const csrfResponse = await fetch(getFullURL('/'), {
           method: 'GET',
           credentials: 'include'
         })
@@ -389,17 +390,13 @@ function AppContent() {
           .find(row => row.startsWith('csrftoken='))
           ?.split('=')[1]
         
-        const response = await fetch('http://localhost:8000/api/auth/login/', {
+        const response = await fetch(getFullURL('/auth/login/'), {
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-            'X-CSRFToken': csrfToken || ''
-          },
-          credentials: 'include', // Include cookies for session authentication
-          body: JSON.stringify({
+          ...getFetchOptions('POST', {
             email: loginCredentials.username.trim(),
             password: loginCredentials.password
+          }, {
+            'X-CSRFToken': csrfToken || ''
           })
         })
 
@@ -524,14 +521,8 @@ function AppContent() {
 
   const handleResendVerification = async () => {
     try {
-      const response = await fetch('http://localhost:8000/api/auth/resend-verification/', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json'
-        },
-        credentials: 'include', // Include cookies for session authentication
-        body: JSON.stringify({ email: verificationEmail })
+      const response = await fetch(getFullURL('/auth/resend-verification/'), {
+        ...getFetchOptions('POST', { email: verificationEmail })
       })
 
       const data = await response.json()
@@ -555,7 +546,7 @@ function AppContent() {
     setEmailVerificationStatus('verifying')
     
     try {
-      const response = await fetch(`http://localhost:8000/api/auth/verify-email/${token}/`, {
+      const response = await fetch(getFullURL(`/auth/verify-email/${token}/`), {
         method: 'GET',
         headers: {
           'Accept': 'application/json'
@@ -616,10 +607,10 @@ function AppContent() {
           // by checking their first_time_login status from the backend
           setTimeout(async () => {
             try {
-              const userResponse = await fetch(`http://localhost:8000/api/users/?email=${encodeURIComponent(currentUser)}`, {
+              const userResponse = await fetch(getFullURL(`/users/?email=${encodeURIComponent(currentUser)}`), {
                 method: 'GET',
                 headers: { 'Accept': 'application/json' },
-                credentials: 'include'
+                credentials: 'include' // Include cookies for session authentication
               })
               
               if (userResponse.ok) {
@@ -833,7 +824,7 @@ function AppContent() {
       setIsLoadingEvents(true)
       
       // Build URL with date range
-      let url = 'http://localhost:8000/api/calendar/events/'
+      let url = getFullURL('/calendar/events/')
       if (startDate && endDate) {
         url += `?start_date=${startDate}&end_date=${endDate}`
         console.log(`📅 Lazy loading events: ${startDate} to ${endDate}`)
@@ -1331,7 +1322,7 @@ function AppContent() {
         try {
         // Try to validate user exists on backend
         console.log('🔍 Validating user exists on backend for:', currentUser)
-        const response = await fetch(`http://localhost:8000/api/users/?email=${encodeURIComponent(currentUser)}`, {
+        const response = await fetch(getFullURL(`/users/?email=${encodeURIComponent(currentUser)}`), {
           method: 'GET',
           headers: {
             'Accept': 'application/json'
@@ -1375,11 +1366,9 @@ function AppContent() {
             // For page refresh, we need to check the backend for first_time_login status
             // Make a quick API call to get the current first_time_login status
             try {
-              const userResponse = await fetch(`http://localhost:8000/api/users/?email=${encodeURIComponent(currentUser)}`, {
+              const userResponse = await fetch(getFullURL(`/users/?email=${encodeURIComponent(currentUser)}`), {
                 method: 'GET',
-                headers: {
-                  'Accept': 'application/json'
-                },
+                headers: { 'Accept': 'application/json' },
                 credentials: 'include' // Include cookies for session authentication
               })
               
@@ -1735,251 +1724,259 @@ function AppContent() {
   // Show login/registration screen if not authenticated
   if (!isAuthenticated) {
     return (
-      <div className="min-h-screen main-bg flex items-center justify-center" dir="rtl">
-        <div className="bg-white rounded-lg shadow-xl p-8 w-full max-w-md mx-4">
-          <div className="text-center mb-8">
-            <div className="w-16 h-16 bg-red-600 rounded-full flex items-center justify-center text-white text-2xl font-bold mx-auto mb-6">
-              ל
+      <div className="min-h-screen bg-gradient-to-br from-cyan-50 via-blue-50 to-cyan-100 flex items-center justify-center p-4 relative overflow-hidden" dir="rtl">
+        {/* Animated background elements */}
+        <div className="absolute top-0 left-0 w-96 h-96 bg-cyan-300 opacity-10 rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2 animate-pulse"></div>
+        <div className="absolute bottom-0 right-0 w-96 h-96 bg-cyan-400 opacity-10 rounded-full blur-3xl translate-x-1/2 translate-y-1/2 animate-pulse animation-delay-2000"></div>
+        
+        <div className="relative z-10 w-full max-w-md">
+          {/* Main card */}
+          <div className="bg-white/95 backdrop-blur-lg rounded-3xl shadow-2xl overflow-hidden border border-cyan-200/50">
+            {/* Header with gradient */}
+            <div className="bg-gradient-to-r from-cyan-500 to-teal-500 px-8 py-12 text-center">
+              <div className="w-24 h-24 bg-white/20 rounded-2xl flex items-center justify-center text-5xl font-black mx-auto mb-4 backdrop-blur-sm border border-white/30 shadow-xl">
+                ✓
+              </div>
+              <h1 className="text-4xl font-black text-white mb-2 tracking-tight">Let's Do It</h1>
+              <p className="text-cyan-50 text-lg font-medium">
+                {showRegistration ? 'הצטרפו אלינו היום' : 'ברוכים חזרה!'}
+              </p>
             </div>
-            <h1 className="text-2xl font-bold text-primary hebrew-text mb-2">ברוכים הבאים ל-TodoFast</h1>
-            <p className="text-description hebrew-text">
-              {showRegistration ? 'הירשמו כדי להתחיל לנהל את המשימות שלכם' : 'התחברו כדי להתחיל לנהל את המשימות שלכם'}
-            </p>
-          </div>
 
-          {/* Registration success message */}
-          {registrationMessage && (
-            <div className="mb-6 bg-green-50 border border-green-200 rounded-lg p-4">
-              <p className="text-green-600 text-sm hebrew-text">{registrationMessage}</p>
-            </div>
-          )}
-
-          {/* Toggle between login, registration, and email verification */}
-          {showEmailVerification ? (
-            <div className="text-center">
-              <div className="mb-6">
-                <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <svg className="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 4.26a2 2 0 001.78 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                  </svg>
+            {/* Content */}
+            <div className="px-8 py-10">
+              {/* Registration success message */}
+              {registrationMessage && (
+                <div className="mb-6 bg-green-50 border-l-4 border-green-500 rounded-lg p-4 animate-in fade-in slide-in-from-top">
+                  <p className="text-green-700 text-sm hebrew-text font-medium">{registrationMessage}</p>
                 </div>
-                <h2 className="text-2xl font-bold text-gray-900 hebrew-text mb-2">בדוק את תיבת הדואר שלך</h2>
-                <p className="text-gray-600 hebrew-text mb-4">
-                  שלחנו אימייל אימות לכתובת:
-                </p>
-                <p className="text-lg font-medium text-blue-600 mb-6" dir="ltr">{verificationEmail}</p>
-                <p className="text-sm text-gray-500 hebrew-text mb-6">
-                  לחץ על הקישור באימייל כדי לאמת את החשבון שלך. אם לא רואה את האימייל, בדוק בתיקיית ספאם.
-                </p>
-              </div>
+              )}
 
-              <div className="space-y-4">
-            <button
-                  onClick={handleResendVerification}
-                  className="w-full bg-blue-600 text-white py-3 px-6 rounded-lg hover:bg-blue-700 transition-colors text-base font-medium hebrew-text"
-                >
-                  שלח שוב אימייל אימות
-                </button>
+              {/* Toggle between login, registration, and email verification */}
+              {showEmailVerification ? (
+                <div className="text-center space-y-6">
+                  <div>
+                    <div className="w-20 h-20 bg-gradient-to-br from-cyan-100 to-teal-100 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg">
+                      <svg className="w-10 h-10 text-cyan-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 4.26a2 2 0 001.78 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                      </svg>
+                    </div>
+                    <h2 className="text-3xl font-bold text-gray-900 hebrew-text mb-3">בדוק את האימייל</h2>
+                    <p className="text-gray-600 hebrew-text mb-2">
+                      שלחנו אימייל אימות לכתובת:
+                    </p>
+                    <p className="text-lg font-bold text-cyan-600 mb-4 break-all" dir="ltr">{verificationEmail}</p>
+                    <p className="text-sm text-gray-500 hebrew-text">
+                      לחץ על הקישור באימייל כדי לאמת את החשבון שלך. אם לא רואה את האימייל, בדוק בתיקיית ספאם.
+                    </p>
+                  </div>
 
-                <button
-                  onClick={handleSwitchToLogin}
-                  className="w-full text-gray-600 hover:text-gray-800 py-2 px-4 transition-colors text-base hebrew-text"
-                >
-                  חזור לעמוד הכניסה
-            </button>
-          </div>
+                  <div className="space-y-3 pt-4">
+                    <button
+                      onClick={handleResendVerification}
+                      className="w-full bg-gradient-to-r from-cyan-500 to-teal-500 text-white py-3 px-6 rounded-xl hover:shadow-lg hover:shadow-cyan-500/30 transition-all duration-300 text-base font-bold hebrew-text transform hover:scale-105"
+                    >
+                      🔄 שלח שוב אימייל אימות
+                    </button>
 
-              <div className="mt-6 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
-                <p className="text-sm text-yellow-800 hebrew-text">
-                  <strong>טיפ:</strong> קישור האימות תקף ל-24 שעות. אם פג התוקף, תוכל לבקש קישור חדש.
-                </p>
-              </div>
-            </div>
-          ) : showRegistration ? (
-            <RegistrationForm
-              onRegisterSuccess={handleRegisterSuccess}
-              onSwitchToLogin={handleSwitchToLogin}
-              isLoading={isLoggingIn}
-              setIsLoading={setIsLoggingIn}
-            />
-          ) : (
-            <div>
-              <form onSubmit={handleLogin} className="space-y-6">
+                    <button
+                      onClick={handleSwitchToLogin}
+                      className="w-full text-gray-600 hover:text-gray-800 py-3 px-4 transition-colors text-base hebrew-text font-medium hover:bg-gray-100 rounded-xl"
+                    >
+                      חזור לעמוד הכניסה
+                    </button>
+                  </div>
+
+                  <div className="mt-6 p-4 bg-yellow-50 border border-yellow-200 rounded-xl">
+                    <p className="text-sm text-yellow-800 hebrew-text">
+                      <strong>💡 טיפ:</strong> קישור האימות תקף ל-24 שעות בלבד.
+                    </p>
+                  </div>
+                </div>
+              ) : showRegistration ? (
+                <RegistrationForm
+                  onRegisterSuccess={handleRegisterSuccess}
+                  onSwitchToLogin={handleSwitchToLogin}
+                  isLoading={isLoggingIn}
+                  setIsLoading={setIsLoggingIn}
+                />
+              ) : (
                 <div>
-                  <label htmlFor="username" className="block text-sm font-medium text-gray-700 hebrew-text mb-2">
-                    שם משתמש או אימייל
-                  </label>
-                  <input
-                    type="text"
-                    id="username"
-                    value={loginCredentials.username}
-                    onChange={(e) => setLoginCredentials(prev => ({ ...prev, username: e.target.value }))}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent hebrew-text"
-                    placeholder="הכנס שם משתמש או אימייל"
-                    autoComplete="username"
-                    required
-                    disabled={isLoggingIn}
-                  />
-                </div>
-                
-                <div>
-                  <label htmlFor="password" className="block text-sm font-medium text-gray-700 hebrew-text mb-2">
-                    סיסמה
-                  </label>
-                  <input
-                    type="password"
-                    id="password"
-                    value={loginCredentials.password}
-                    onChange={(e) => setLoginCredentials(prev => ({ ...prev, password: e.target.value }))}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent"
-                    placeholder="הכנס סיסמה"
-                    autoComplete="current-password"
-                    required
-                    disabled={isLoggingIn}
-                  />
-                </div>
-                
-                {loginError && (
-                  <div className="bg-red-50 border border-red-200 rounded-lg p-3">
-                    <p className="text-red-600 text-sm hebrew-text">{loginError}</p>
-                  </div>
-                )}
-                
-            <button
-                  type="submit"
-                  disabled={isLoggingIn || !loginCredentials.username || !loginCredentials.password}
-                  className="w-full bg-red-600 text-white py-3 px-6 rounded-lg hover:bg-red-700 transition-colors text-base font-medium hebrew-text disabled:bg-gray-400 disabled:cursor-not-allowed flex items-center justify-center"
-                >
-                  {isLoggingIn ? (
-                    <>
-                      <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin ml-2"></div>
-                      מתחבר...
-                    </>
-                  ) : (
-                    'התחבר'
-                  )}
-            </button>
-              </form>
+                  <form onSubmit={handleLogin} className="space-y-5">
+                    <div>
+                      <label htmlFor="username" className="block text-sm font-bold text-gray-700 hebrew-text mb-2">
+                        📧 שם משתמש או אימייל
+                      </label>
+                      <input
+                        type="text"
+                        id="username"
+                        value={loginCredentials.username}
+                        onChange={(e) => setLoginCredentials(prev => ({ ...prev, username: e.target.value }))}
+                        className="w-full px-4 py-3 border-2 border-cyan-200 rounded-xl focus:ring-2 focus:ring-cyan-500 focus:border-transparent hebrew-text bg-cyan-50/50 hover:bg-white transition-colors text-base font-medium"
+                        placeholder="הכנס שם משתמש או אימייל"
+                        autoComplete="username"
+                        required
+                        disabled={isLoggingIn}
+                      />
+                    </div>
+                    
+                    <div>
+                      <label htmlFor="password" className="block text-sm font-bold text-gray-700 hebrew-text mb-2">
+                        🔐 סיסמה
+                      </label>
+                      <input
+                        type="password"
+                        id="password"
+                        value={loginCredentials.password}
+                        onChange={(e) => setLoginCredentials(prev => ({ ...prev, password: e.target.value }))}
+                        className="w-full px-4 py-3 border-2 border-cyan-200 rounded-xl focus:ring-2 focus:ring-cyan-500 focus:border-transparent text-base font-medium bg-cyan-50/50 hover:bg-white transition-colors"
+                        placeholder="הכנס סיסמה"
+                        autoComplete="current-password"
+                        required
+                        disabled={isLoggingIn}
+                      />
+                    </div>
+                    
+                    {loginError && (
+                      <div className="bg-red-50 border-l-4 border-red-500 rounded-lg p-4 animate-shake">
+                        <p className="text-red-700 text-sm hebrew-text font-medium">❌ {loginError}</p>
+                      </div>
+                    )}
+                    
+                    <button
+                      type="submit"
+                      disabled={isLoggingIn || !loginCredentials.username || !loginCredentials.password}
+                      className="w-full bg-gradient-to-r from-cyan-500 to-teal-500 text-white py-4 px-6 rounded-xl hover:shadow-lg hover:shadow-cyan-500/50 transition-all duration-300 text-base font-bold hebrew-text disabled:bg-gray-400 disabled:cursor-not-allowed disabled:shadow-none flex items-center justify-center gap-2 transform hover:scale-105 active:scale-95"
+                    >
+                      {isLoggingIn ? (
+                        <>
+                          <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                          <span>מתחבר...</span>
+                        </>
+                      ) : (
+                        <>
+                          <span>🚀 התחבר עכשיו</span>
+                        </>
+                      )}
+                    </button>
+                  </form>
 
-              {/* Google Login Button */}
-              <div className="mt-4">
-                <div className="relative">
-                  <div className="absolute inset-0 flex items-center">
-                    <div className="w-full border-t border-gray-300" />
+                  {/* Divider */}
+                  <div className="my-6 flex items-center gap-4">
+                    <div className="flex-1 h-px bg-gradient-to-r from-transparent to-gray-300" />
+                    <span className="text-gray-500 text-sm font-medium hebrew-text">או</span>
+                    <div className="flex-1 h-px bg-gradient-to-l from-transparent to-gray-300" />
                   </div>
-                  <div className="relative flex justify-center text-sm">
-                    <span className="px-2 bg-white text-gray-500 hebrew-text">או</span>
-                  </div>
-                </div>
-                
-                <div className="mt-4">
-                  <GoogleLoginButton 
-                    onGoogleLogin={handleGoogleLogin}
-                    disabled={isLoggingIn}
-                  />
-                </div>
-              </div>
 
-              {/* Switch to Registration */}
-              <div className="mt-6 text-center">
-                <p className="text-gray-600 hebrew-text">
-                  אין לך חשבון?{' '}
+                  {/* Google Login Button */}
+                  <div className="mb-6">
+                    <GoogleLoginButton 
+                      onGoogleLogin={handleGoogleLogin}
+                      disabled={isLoggingIn}
+                    />
+                  </div>
+
+                  {/* Switch to Registration */}
+                  <div className="text-center p-4 bg-cyan-50 rounded-xl">
+                    <p className="text-gray-700 hebrew-text text-sm">
+                      אין לך חשבון?{' '}
+                      <button
+                        type="button"
+                        onClick={handleSwitchToRegistration}
+                        className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-600 to-teal-600 hover:underline font-bold text-base transition-all"
+                        disabled={isLoggingIn}
+                      >
+                        הירשם כאן
+                      </button>
+                    </p>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Demo credentials footer - only show on login screen */}
+            {!showRegistration && !showEmailVerification && (
+              <div className="border-t border-cyan-200/50 px-8 py-6 bg-cyan-50/30">
+                <h3 className="text-sm font-bold text-gray-700 hebrew-text mb-4 flex items-center gap-2">
+                  🧪 <span>פרטי התחברות לדמו:</span>
+                </h3>
+                <div className="grid grid-cols-2 gap-3 text-xs mb-6">
+                  <div className="bg-white p-3 rounded-lg border border-cyan-200 hover:border-cyan-400 transition-colors">
+                    <p className="text-gray-500 hebrew-text mb-1 font-medium">משתמש רגיל:</p>
+                    <p className="font-mono text-gray-700 font-bold">demo / demo123</p>
+                  </div>
+                  <div className="bg-white p-3 rounded-lg border border-cyan-200 hover:border-cyan-400 transition-colors">
+                    <p className="text-gray-500 hebrew-text mb-1 font-medium">מנהל:</p>
+                    <p className="font-mono text-gray-700 font-bold">admin / admin123</p>
+                  </div>
+                  <div className="bg-white p-3 rounded-lg border border-cyan-200 hover:border-cyan-400 transition-colors">
+                    <p className="text-gray-500 hebrew-text mb-1 font-medium">משתמש עברי:</p>
+                    <p className="font-mono text-gray-700 font-bold">משתמש / 123456</p>
+                  </div>
+                  <div className="bg-white p-3 rounded-lg border border-cyan-200 hover:border-cyan-400 transition-colors">
+                    <p className="text-gray-500 hebrew-text mb-1 font-medium">מפתח:</p>
+                    <p className="font-mono text-gray-700 font-bold">developer / dev2024</p>
+                  </div>
+                </div>
+
+                <div className="space-y-2">
                   <button
-                    type="button"
-                    onClick={handleSwitchToRegistration}
-                    className="text-red-600 hover:text-red-500 font-medium"
-                    disabled={isLoggingIn}
+                    onClick={() => {
+                      console.log('Clearing ALL localStorage data...')
+                      localStorage.clear()
+                      alert('כל הנתונים נמחקו! העמוד יתרענן.')
+                      window.location.reload()
+                    }}
+                    className="w-full py-2 px-3 text-xs text-red-600 hover:text-red-800 border border-red-300 rounded-lg hover:bg-red-50 hebrew-text font-medium transition-colors"
                   >
-                    הירשם כאן
+                    🗑️ נקה את כל הנתונים
                   </button>
-                </p>
+                  <button
+                    onClick={() => {
+                      console.log('🧹 FORCE CLEARING ALL USER DATA...')
+                      const allKeys = Object.keys(localStorage)
+                      console.log('📋 All keys before cleanup:', allKeys)
+                      allKeys.forEach(key => {
+                        if (key !== 'user_authenticated' && key !== 'username' && key !== 'darkMode') {
+                          localStorage.removeItem(key)
+                          console.log('🗑️ Removed:', key)
+                        }
+                      })
+                      console.log('📋 Remaining keys after cleanup:', Object.keys(localStorage))
+                      alert('🧹 כל הנתונים נמחקו לחלוטין! משתמשים יקבלו נתוני ברירת מחדל חדשים.')
+                      window.location.reload()
+                    }}
+                    className="w-full py-2 px-3 text-xs text-orange-600 hover:text-orange-800 border border-orange-300 rounded-lg hover:bg-orange-50 hebrew-text font-medium transition-colors"
+                  >
+                    🔄 איפוס נתוני משתמשים
+                  </button>
+                  <button
+                    onClick={() => {
+                      console.log('🎯 TESTING: Simulating first-time login for all users...')
+                      const users = ['demo', 'admin', 'משתמש', 'developer']
+                      users.forEach(user => {
+                        const initKey = `${user}_user_initialized`
+                        if (localStorage.getItem(initKey)) {
+                          localStorage.removeItem(initKey)
+                          console.log(`🗑️ Removed initialization flag for: ${user}`)
+                        }
+                      })
+                      alert('🧪 הוסרו דגלי האתחול! משתמשים יקבלו נתונים חדשים בהתחברות הבאה.')
+                      window.location.reload()
+                    }}
+                    className="w-full py-2 px-3 text-xs text-cyan-600 hover:text-cyan-800 border border-cyan-300 rounded-lg hover:bg-cyan-50 hebrew-text font-medium transition-colors"
+                  >
+                    🧪 בדיקה: איפוס דגלי משתמשים
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
-            </div>
-          )}
 
-          {/* Demo credentials info - only show on login screen */}
-          {!showRegistration && (
-            <div className="mt-8 p-4 bg-gray-50 rounded-lg">
-            <h3 className="text-sm font-medium text-gray-700 hebrew-text mb-3">פרטי התחברות לדמו:</h3>
-            <div className="space-y-2 text-sm text-gray-600">
-              <div className="flex justify-between">
-                <span className="hebrew-text">משתמש רגיל:</span>
-                <span className="font-mono">demo / demo123</span>
-          </div>
-              <div className="flex justify-between">
-                <span className="hebrew-text">מנהל:</span>
-                <span className="font-mono">admin / admin123</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="hebrew-text">משתמש עברי:</span>
-                <span className="font-mono">משתמש / 123456</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="hebrew-text">מפתח:</span>
-                <span className="font-mono">developer / dev2024</span>
-              </div>
-            </div>
-            <div className="mt-6 p-3 bg-red-50 rounded border border-red-200 space-y-3">
-              <h4 className="text-sm font-medium text-red-700 hebrew-text">כלי פיתוח:</h4>
-              <button
-                onClick={() => {
-                  console.log('Clearing ALL localStorage data...')
-                  localStorage.clear()
-                  alert('כל הנתונים נמחקו! העמוד יתרענן.')
-                  window.location.reload()
-                }}
-                className="w-full py-2 px-3 text-sm text-red-600 hover:text-red-800 border border-red-300 rounded hover:bg-red-100 hebrew-text"
-              >
-                🗑️ נקה את כל הנתונים
-              </button>
-              <button
-                onClick={() => {
-                  console.log('🧹 FORCE CLEARING ALL USER DATA...')
-                  
-                  // Get all localStorage keys
-                  const allKeys = Object.keys(localStorage)
-                  console.log('📋 All keys before cleanup:', allKeys)
-                  
-                  // Clear ALL data except authentication
-                  allKeys.forEach(key => {
-                    if (key !== 'user_authenticated' && key !== 'username' && key !== 'darkMode') {
-                      localStorage.removeItem(key)
-                      console.log('🗑️ Removed:', key)
-                    }
-                  })
-                  
-                  console.log('📋 Remaining keys after cleanup:', Object.keys(localStorage))
-                  alert('🧹 כל הנתונים נמחקו לחלוטין! משתמשים יקבלו נתוני ברירת מחדל חדשים.')
-                  window.location.reload()
-                }}
-                className="w-full py-2 px-3 text-sm text-orange-600 hover:text-orange-800 border border-orange-300 rounded hover:bg-orange-100 hebrew-text"
-              >
-                🔄 איפוס נתוני משתמשים
-              </button>
-              <button
-                onClick={() => {
-                  console.log('🎯 TESTING: Simulating first-time login for all users...')
-                  
-                  // Remove ONLY the user_initialized flags to force default data loading
-                  const users = ['demo', 'admin', 'משתמש', 'developer']
-                  users.forEach(user => {
-                    const initKey = `${user}_user_initialized`
-                    if (localStorage.getItem(initKey)) {
-                      localStorage.removeItem(initKey)
-                      console.log(`🗑️ Removed initialization flag for: ${user}`)
-                    }
-                  })
-                  
-                  alert('🧪 הוסרו דגלי האתחול! משתמשים יקבלו נתונים חדשים בהתחברות הבאה.')
-                  window.location.reload()
-                }}
-                className="w-full py-2 px-3 text-sm text-blue-600 hover:text-blue-800 border border-blue-300 rounded hover:bg-blue-100 hebrew-text"
-              >
-                🧪 בדיקה: איפוס דגלי משתמשים
-              </button>
-            </div>
-          </div>
-          )}
+          {/* Footer text */}
+          <p className="text-center text-cyan-900/60 text-sm hebrew-text mt-8 font-medium">
+            © 2024 Let's Do It - כל הזכויות שמורות
+          </p>
         </div>
       </div>
     )

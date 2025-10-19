@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { CalendarDaysIcon, CheckCircleIcon, ArrowPathIcon } from '@heroicons/react/24/outline'
 import { useToast } from '../contexts/ToastContext'
+import { getFullURL, getFetchOptions } from '../utils/apiUrl'
 
 function CalendarSettings({ currentUser }) {
   const [isConnected, setIsConnected] = useState(false)
@@ -33,7 +34,7 @@ function CalendarSettings({ currentUser }) {
 
   const checkCalendarStatus = async () => {
     try {
-      const response = await fetch('http://localhost:8000/api/calendar/status/', {
+      const response = await fetch(getFullURL('/api/calendar/status/'), {
         method: 'GET',
         credentials: 'include',
         headers: {
@@ -53,7 +54,7 @@ function CalendarSettings({ currentUser }) {
     console.log('Starting calendar connection...')
     try {
       console.log('Fetching calendar connect endpoint...')
-      const response = await fetch('http://localhost:8000/api/calendar/connect/', {
+      const response = await fetch(getFullURL('/api/calendar/connect/'), {
         method: 'GET',
         credentials: 'include',
         headers: {
@@ -91,7 +92,7 @@ function CalendarSettings({ currentUser }) {
     setIsLoading(true)
     try {
       // Get CSRF token first
-      const csrfResponse = await fetch('http://localhost:8000/api/csrf-token/', {
+      const csrfResponse = await fetch(getFullURL('/api/csrf-token/'), {
         method: 'GET',
         credentials: 'include'
       })
@@ -111,7 +112,7 @@ function CalendarSettings({ currentUser }) {
         headers['X-CSRFToken'] = csrfToken
       }
 
-      const response = await fetch('http://localhost:8000/api/calendar/disconnect/', {
+      const response = await fetch(getFullURL('/api/calendar/disconnect/'), {
         method: 'POST',
         credentials: 'include',
         headers
@@ -140,7 +141,7 @@ function CalendarSettings({ currentUser }) {
     
     try {
       // Get CSRF token first
-      const csrfResponse = await fetch('http://localhost:8000/api/csrf-token/', {
+      const csrfResponse = await fetch(getFullURL('/api/csrf-token/'), {
         method: 'GET',
         credentials: 'include'
       })
@@ -160,7 +161,7 @@ function CalendarSettings({ currentUser }) {
         headers['X-CSRFToken'] = csrfToken
       }
       
-      const response = await fetch('http://localhost:8000/api/calendar/sync-all/', {
+      const response = await fetch(getFullURL('/api/calendar/sync-all/'), {
         method: 'POST',
         credentials: 'include',
         headers
