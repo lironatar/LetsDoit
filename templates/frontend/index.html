@@ -1,14 +1,17 @@
-<!DOCTYPE html>
+{% load static %}
+<!doctype html>
 <html lang="he" dir="rtl">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="{% static 'vite.svg' %}" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>TodoFast - ניהול משימות</title>
-    <link rel="icon" type="image/svg+xml" href="/static/vite.svg">
-    <link rel="stylesheet" href="/static/assets/index-CYb9Q9ZB.css">
-</head>
-<body>
+    <script type="module" crossorigin src="{% static 'assets/index-CBtHV8v9.js' %}"></script>
+    <link rel="modulepreload" crossorigin href="{% static 'assets/vendor-D53QtZak.js' %}">
+    <link rel="modulepreload" crossorigin href="{% static 'assets/utils-J_fFpkQG.js' %}">
+    <link rel="stylesheet" crossorigin href="{% static 'assets/index-CYb9Q9ZB.css' %}">
+  </head>
+  <body>
     <div id="root"></div>
-    <script type="module" src="/static/assets/index-Bp3wyU_f.js"></script>
-</body>
+  </body>
 </html>
