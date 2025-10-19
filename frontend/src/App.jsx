@@ -1734,12 +1734,16 @@ function AppContent() {
           <div className="bg-white/95 backdrop-blur-lg rounded-3xl shadow-2xl overflow-hidden border border-cyan-200/50">
             {/* Header with gradient */}
             <div className="bg-gradient-to-r from-cyan-500 to-teal-500 px-8 py-12 text-center">
-              <div className="w-24 h-24 bg-white/20 rounded-2xl flex items-center justify-center text-5xl font-black mx-auto mb-4 backdrop-blur-sm border border-white/30 shadow-xl">
-                ✓
+              <div className="w-24 h-24 bg-white/20 rounded-2xl flex items-center justify-center mx-auto mb-4 backdrop-blur-sm border border-white/30 shadow-xl overflow-hidden">
+                <img 
+                  src="/src/components/icons/icon_for_now.png" 
+                  alt="Let's Do It Logo" 
+                  className="w-16 h-16 object-contain"
+                />
               </div>
               <h1 className="text-4xl font-black text-white mb-2 tracking-tight">Let's Do It</h1>
               <p className="text-cyan-50 text-lg font-medium">
-                {showRegistration ? 'הצטרפו אלינו היום' : 'ברוכים חזרה!'}
+                {showRegistration ? 'הצטרפו אלינו היום' : 'היום שלך, מתוכנן בקלות, ביחד!'}
               </p>
             </div>
 
