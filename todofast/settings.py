@@ -149,6 +149,7 @@ REST_FRAMEWORK = {
 }
 
 # CORS settings for React frontend
+# NOTE: Google OAuth uses same-origin requests, so these settings don't affect it
 FRONTEND_URL = config('FRONTEND_URL', default='http://localhost:5173')
 CORS_ALLOWED_ORIGINS = [
     FRONTEND_URL,
@@ -199,7 +200,9 @@ GOOGLE_OAUTH2_CLIENT_SECRET = config('GOOGLE_OAUTH2_CLIENT_SECRET', default='')
 # Security Settings
 SECURE_BROWSER_XSS_FILTER = config('SECURE_BROWSER_XSS_FILTER', default=True, cast=bool)
 SECURE_CONTENT_TYPE_NOSNIFF = config('SECURE_CONTENT_TYPE_NOSNIFF', default=True, cast=bool)
-X_FRAME_OPTIONS = config('X_FRAME_OPTIONS', default='DENY')
+# IMPORTANT: Set to SAMEORIGIN to allow Google OAuth iframes to work
+# DENY would block Google Sign-In button from functioning
+X_FRAME_OPTIONS = config('X_FRAME_OPTIONS', default='SAMEORIGIN')
 
 # HTTPS Settings (enable these when using HTTPS)
 SECURE_SSL_REDIRECT = config('SECURE_SSL_REDIRECT', default=False, cast=bool)
@@ -211,8 +214,10 @@ SECURE_HSTS_PRELOAD = config('SECURE_HSTS_PRELOAD', default=False, cast=bool)
 SESSION_COOKIE_SECURE = config('SESSION_COOKIE_SECURE', default=False, cast=bool)  # Set to True when SSL is enabled
 SESSION_COOKIE_HTTPONLY = True
 SESSION_COOKIE_AGE = 86400  # 24 hours
-SESSION_SAVE_EVERY_REQUEST = True  # Persist session on every request
-SESSION_COOKIE_SAMESITE = 'Lax'  # Allow cross-origin session cookies
+SESSION_SAVE_EVERY_REQUEST = False  # Don't save on every request to avoid session conflicts
+# NOTE: 'None' requires HTTPS and allows cross-site cookies (needed for Google OAuth)
+# 'Lax' is more secure but may cause issues with OAuth callbacks
+SESSION_COOKIE_SAMESITE = 'Lax'  # Keep as Lax for now, change to None if OAuth fails with HTTPS
 
 # CSRF Configuration
 CSRF_COOKIE_SECURE = config('SECURE_SSL_REDIRECT', default=False, cast=bool)  # Only over HTTPS when SSL is enabled
