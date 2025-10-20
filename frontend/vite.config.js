@@ -34,6 +34,12 @@ export default defineConfig({
     hmr: {
       clientPort: 443, // Use HTTPS port for HMR over ngrok
     },
+    proxy: {
+      '/privacy-policy': {
+        target: 'http://localhost:8000',
+        changeOrigin: true,
+      },
+    },
   },
   preview: {
     port: 4173,

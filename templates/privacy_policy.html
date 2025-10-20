@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>מדיניות הפרטיות - ToDoFast</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(to right, #06b6d4, #14b8a6);
+            color: white;
+            padding: 3rem 2rem;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.95;
+        }
+
+        /* Language Toggle */
+        .language-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 100;
+        }
+
+        .language-toggle button {
+            padding: 10px 20px;
+            background: #06b6d4;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            font-size: 0.95rem;
+        }
+
+        .language-toggle button:hover {
+            background: #0891b2;
+            transform: translateY(-2px);
+        }
+
+        /* Navigation Bar */
+        .navbar {
+            background: white;
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .navbar a {
+            color: #06b6d4;
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s ease;
+        }
+
+        .navbar a:hover {
+            color: #0891b2;
+        }
+
+        .navbar .updated {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        /* Container */
+        .container {
+            max-width: 900px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+
+        .content {
+            background: white;
+            padding: 3rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            line-height: 1.8;
+        }
+
+        /* Typography */
+        h2 {
+            color: #06b6d4;
+            font-size: 1.8rem;
+            margin: 2rem 0 1rem 0;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #e0f2fe;
+        }
+
+        h3 {
+            color: #0891b2;
+            font-size: 1.3rem;
+            margin: 1.5rem 0 1rem 0;
+        }
+
+        p {
+            margin-bottom: 1rem;
+            color: #555;
+        }
+
+        ul {
+            margin: 1rem 0 1rem 2rem;
+            list-style-position: inside;
+        }
+
+        li {
+            margin-bottom: 0.7rem;
+            color: #555;
+        }
+
+        strong {
+            color: #06b6d4;
+            font-weight: 600;
+        }
+
+        .contact-box {
+            background: #f0f9ff;
+            border-left: 4px solid #06b6d4;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: 8px;
+        }
+
+        .contact-box p {
+            margin-bottom: 0.5rem;
+        }
+
+        /* Footer */
+        .footer {
+            background: #f5f5f5;
+            border-top: 1px solid #e0e0e0;
+            margin-top: 3rem;
+            padding: 2rem;
+            text-align: center;
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-bottom: 2rem;
+            color: #06b6d4;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .back-link:hover {
+            color: #0891b2;
+            margin-right: 10px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 1.8rem;
+            }
+
+            .header p {
+                font-size: 1rem;
+            }
+
+            .container {
+                padding: 0 1rem;
+            }
+
+            .content {
+                padding: 1.5rem;
+            }
+
+            .language-toggle {
+                top: 10px;
+                right: 10px;
+            }
+
+            .language-toggle button {
+                padding: 8px 16px;
+                font-size: 0.9rem;
+            }
+
+            h2 {
+                font-size: 1.5rem;
+            }
+
+            h3 {
+                font-size: 1.1rem;
+            }
+        }
+
+        /* Hidden class */
+        .hidden {
+            display: none;
+        }
+
+        /* RTL for English */
+        html[lang="en"] {
+            direction: ltr;
+            text-align: left;
+        }
+
+        html[lang="en"] ul,
+        html[lang="en"] .language-toggle {
+            right: auto;
+            left: 20px;
+        }
+
+        html[lang="en"] .navbar {
+            flex-direction: row-reverse;
+        }
+
+        html[lang="en"] ul {
+            margin-left: auto;
+            margin-right: 2rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- Language Toggle -->
+    <div class="language-toggle">
+        <button onclick="toggleLanguage()">English</button>
+    </div>
+
+    <!-- Header -->
+    <div class="header">
+        <h1 id="title">מדיניות הפרטיות</h1>
+        <p id="subtitle">ToDoFast - ביטחון הנתונים שלך חשוב לנו</p>
+    </div>
+
+    <!-- Navigation -->
+    <div class="navbar">
+        <a href="/" id="back-btn">← חזרה</a>
+        <span class="updated" id="updated">עדכון אחרון: 1 בינואר 2025</span>
+    </div>
+
+    <!-- Content -->
+    <div class="container">
+        <div class="content" id="policy-content">
+            <!-- Content will be inserted here by JavaScript -->
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+        <p id="footer-text">&copy; 2024 ToDoFast - כל הזכויות שמורות</p>
+    </div>
+
+    <script>
+        const HEBREW_CONTENT = `
+            <h2>1. מבוא</h2>
+            <p>ברוכים הבאים ל-ToDoFast. אנו מתחייבים להגן על פרטיותך וזכויותיך. מדיניות זו מתארת כיצד אנו אוספים, משתמשים, שומרים וחולקים את המידע שלך כאשר אתה משתמש בשירותינו.</p>
+
+            <h2>2. מידע שאנו אוספים</h2>
+            <h3>2.1 מידע שאתה מספק ישירות:</h3>
+            <ul>
+                <li><strong>פרטי חשבון:</strong> שם משתמש, כתובת דוא"ל, סיסמה (מוצפנת)</li>
+                <li><strong>מידע פרופיל:</strong> תמונת פרופיל, שם מלא, מידע ביוגרפי</li>
+                <li><strong>תוכן אישי:</strong> משימות, פרויקטים, קומנטים, הערות וכל תוכן אחר שאתה יוצר</li>
+                <li><strong>נתוני קשר:</strong> מספרי טלפון אופציונליים (אם הוזנו)</li>
+            </ul>
+
+            <h3>2.2 מידע שנאסף באופן אוטומטי:</h3>
+            <ul>
+                <li><strong>נתונים טכניים:</strong> כתובת IP, סוג דפדפן, מערכת הפעלה, זיהוי ההתקן</li>
+                <li><strong>נתוני שימוש:</strong> עמודים שביקרת בהם, זמן שהיית בהם, קישורים שלחצת עליהם</li>
+                <li><strong>Cookies:</strong> אנו משתמשים בעוגיות לשימור פרטי הגישה והעדפות</li>
+                <li><strong>נתוני טוקנים:</strong> אנו שומרים אסימוני הזדהות מוצפנים כדי להשאיר אותך מחובר</li>
+            </ul>
+
+            <h3>2.3 מידע משירותים של צד שלישי:</h3>
+            <ul>
+                <li><strong>Google Calendar:</strong> אם תחבר את Google Calendar, אנו נשתמש בנתוני לוח השנה שלך</li>
+                <li><strong>Google OAuth:</strong> מידע בסיסי מהחשבון שלך ב-Google (בהסכמתך)</li>
+            </ul>
+
+            <h2>3. כיצד אנו משתמשים במידע שלך</h2>
+            <ul>
+                <li><strong>לספק שירותים:</strong> יצירה וניהול משימות, פרויקטים, וקבוצות</li>
+                <li><strong>לאימות משתמש:</strong> לוודא את זהות החשבון שלך בבטחה</li>
+                <li><strong>לשיפור השירות:</strong> ניתוח שימוש, תיקומי באגים, ותוספות תכונות</li>
+                <li><strong>ללשמירת ההיסטוריה:</strong> בדיקת משימות שהושלמו וקבלת אזהרות</li>
+                <li><strong>לתקשורת:</strong> שליחת עדכוני ביטחון, הודעות חשובות, וביקורי דוא"ל</li>
+                <li><strong>לתאימות משפטית:</strong> מענה להוראות משפטיות כאשר נדרש חוקית</li>
+            </ul>
+
+            <h2>4. שיתוף מידע</h2>
+            <h3>אנו <strong>לא</strong> משתפים את המידע שלך:</h3>
+            <ul>
+                <li>עם חברות שלישיות למכירה או מיזמים מסחריים</li>
+                <li>עם מפרסמים לציל כיוונוני ישיר</li>
+                <li>עם כל צד שלישי ללא הסכמתך (פרט לחריגים משפטיים)</li>
+            </ul>
+
+            <h3>אנו <strong>עשויים</strong> לשתף:</h3>
+            <ul>
+                <li><strong>צוותים וחברים:</strong> בהסכמתך, כאשר אתה משתף משימות או פרויקטים</li>
+                <li><strong>ספקי שירותים:</strong> דיווחים טכניים (מסדי נתונים, שרתים), תחת הסכם חסויות</li>
+                <li><strong>כן נדרש חוקית:</strong> כשמשטרות או גופים משפטיים דורשים זאת</li>
+                <li><strong>בתאונת עסקית:</strong> במקרה של מיזוג או רכישה</li>
+            </ul>
+
+            <h2>5. אבטחת המידע</h2>
+            <ul>
+                <li>אנו משתמשים בהצפנה SSL/TLS לשמירה על מידע במהלך ההעברה</li>
+                <li>הסיסמאות שלך מוצפנות ולא מאוחסנות בטקסט פשוט</li>
+                <li>גישה למידע מוגבלת לעובדים מורשים בלבד</li>
+                <li>אנו מבצעים עדכונים אבטחה קבועים לתוכנה שלנו</li>
+            </ul>
+
+            <h2>6. זכויותיך</h2>
+            <h3>יש לך את הזכויות הבאות:</h3>
+            <ul>
+                <li><strong>זכות גישה:</strong> לבקש העתק של כל המידע שלך</li>
+                <li><strong>זכות תיקון:</strong> לתקן מידע אישי שגוי</li>
+                <li><strong>זכות מחיקה:</strong> לבקש מחיקת המידע שלך</li>
+                <li><strong>זכות למנוע עיבוד:</strong> להפסיק שימוש במידע שלך</li>
+                <li><strong>זכות ניידות:</strong> לקבל את המידע שלך בפורמט נוח</li>
+            </ul>
+            <p>לתיעוד כל זכות, אנא שלח דוא"ל ל-<strong>privacy@todofast.com</strong></p>
+
+            <h2>7. יצירת קשר</h2>
+            <p>אם יש לך שאלות על מדיניות פרטיות זו, אנא צור קשר:</p>
+            <div class="contact-box">
+                <p><strong>דוא"ל:</strong> privacy@todofast.com</p>
+                <p><strong>כתובת:</strong> ToDoFast, ישראל</p>
+            </div>
+
+            <h2>8. תאריך כניסה לתוקף</h2>
+            <p>מדיניות זו תחלה 1 בינואר 2025</p>
+        `;
+
+        const ENGLISH_CONTENT = `
+            <h2>1. Introduction</h2>
+            <p>Welcome to ToDoFast. We are committed to protecting your privacy and your rights. This policy describes how we collect, use, store, and share your information when you use our services.</p>
+
+            <h2>2. Information We Collect</h2>
+            <h3>2.1 Information You Provide Directly:</h3>
+            <ul>
+                <li><strong>Account Details:</strong> Username, email address, password (encrypted)</li>
+                <li><strong>Profile Information:</strong> Profile picture, full name, biographical information</li>
+                <li><strong>Personal Content:</strong> Tasks, projects, comments, notes, and any other content you create</li>
+                <li><strong>Contact Information:</strong> Optional phone numbers (if provided)</li>
+            </ul>
+
+            <h3>2.2 Information Automatically Collected:</h3>
+            <ul>
+                <li><strong>Technical Data:</strong> IP address, browser type, operating system, device identifier</li>
+                <li><strong>Usage Data:</strong> Pages you visited, time spent on them, links you clicked</li>
+                <li><strong>Cookies:</strong> We use cookies to remember login details and preferences</li>
+                <li><strong>Token Data:</strong> We store encrypted authentication tokens to keep you logged in</li>
+            </ul>
+
+            <h3>2.3 Information from Third-Party Services:</h3>
+            <ul>
+                <li><strong>Google Calendar:</strong> If you connect Google Calendar, we use your calendar data</li>
+                <li><strong>Google OAuth:</strong> Basic information from your Google account (with your consent)</li>
+            </ul>
+
+            <h2>3. How We Use Your Information</h2>
+            <ul>
+                <li><strong>To Provide Services:</strong> Creating and managing tasks, projects, and teams</li>
+                <li><strong>User Authentication:</strong> Verify your account identity securely</li>
+                <li><strong>Service Improvement:</strong> Analyze usage, fix bugs, and add new features</li>
+                <li><strong>History Keeping:</strong> Track completed tasks and send reminders</li>
+                <li><strong>Communication:</strong> Send security updates, important notices, and email notifications</li>
+                <li><strong>Legal Compliance:</strong> Respond to legal requests when required by law</li>
+            </ul>
+
+            <h2>4. Information Sharing</h2>
+            <h3>We <strong>DO NOT</strong> Share Your Information:</h3>
+            <ul>
+                <li>With third-party companies for sale or commercial ventures</li>
+                <li>With advertisers for targeted advertising</li>
+                <li>With any third party without your consent (except for legal exceptions)</li>
+            </ul>
+
+            <h3>We <strong>MAY</strong> Share:</h3>
+            <ul>
+                <li><strong>Teams and Friends:</strong> With your consent, when you share tasks or projects</li>
+                <li><strong>Service Providers:</strong> Technical reports (databases, servers), under confidentiality agreements</li>
+                <li><strong>Legal Requirements:</strong> When law enforcement or legal authorities require it</li>
+                <li><strong>Business Transition:</strong> In case of merger or acquisition</li>
+            </ul>
+
+            <h2>5. Information Security</h2>
+            <ul>
+                <li>We use SSL/TLS encryption to protect information during transmission</li>
+                <li>Your passwords are encrypted and not stored in plain text</li>
+                <li>Access to information is limited to authorized employees only</li>
+                <li>We perform regular security updates to our software</li>
+            </ul>
+
+            <h2>6. Your Rights</h2>
+            <h3>You Have the Following Rights:</h3>
+            <ul>
+                <li><strong>Right of Access:</strong> Request a copy of all your information</li>
+                <li><strong>Right to Correction:</strong> Correct inaccurate personal information</li>
+                <li><strong>Right to Deletion:</strong> Request deletion of your information</li>
+                <li><strong>Right to Object:</strong> Stop us from processing your data</li>
+                <li><strong>Right to Portability:</strong> Receive your information in a convenient format</li>
+            </ul>
+            <p>To exercise any of these rights, please send an email to <strong>privacy@todofast.com</strong></p>
+
+            <h2>7. Contact Us</h2>
+            <p>If you have questions about this privacy policy, please contact us:</p>
+            <div class="contact-box">
+                <p><strong>Email:</strong> privacy@todofast.com</p>
+                <p><strong>Address:</strong> ToDoFast, Israel</p>
+            </div>
+
+            <h2>8. Effective Date</h2>
+            <p>This policy is effective January 1, 2025</p>
+        `;
+
+        let currentLang = 'he';
+
+        function toggleLanguage() {
+            currentLang = currentLang === 'he' ? 'en' : 'he';
+            updateContent();
+        }
+
+        function updateContent() {
+            const html = document.documentElement;
+            const content = document.getElementById('policy-content');
+            const langBtn = document.querySelector('.language-toggle button');
+            const title = document.getElementById('title');
+            const subtitle = document.getElementById('subtitle');
+            const backBtn = document.getElementById('back-btn');
+            const updated = document.getElementById('updated');
+            const footer = document.getElementById('footer-text');
+
+            if (currentLang === 'he') {
+                html.lang = 'he';
+                html.dir = 'rtl';
+                content.innerHTML = HEBREW_CONTENT;
+                langBtn.textContent = 'English';
+                title.textContent = 'מדיניות הפרטיות';
+                subtitle.textContent = 'ToDoFast - ביטחון הנתונים שלך חשוב לנו';
+                backBtn.textContent = '← חזרה';
+                updated.textContent = 'עדכון אחרון: 1 בינואר 2025';
+                footer.textContent = '© 2024 ToDoFast - כל הזכויות שמורות';
+            } else {
+                html.lang = 'en';
+                html.dir = 'ltr';
+                content.innerHTML = ENGLISH_CONTENT;
+                langBtn.textContent = 'עברית';
+                title.textContent = 'Privacy Policy';
+                subtitle.textContent = 'ToDoFast - Your data security matters to us';
+                backBtn.textContent = 'Back →';
+                updated.textContent = 'Last updated: January 1, 2025';
+                footer.textContent = '© 2024 ToDoFast - All rights reserved';
+            }
+        }
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', updateContent);
+    </script>
+</body>
+</html>

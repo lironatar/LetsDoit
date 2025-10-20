@@ -13,6 +13,8 @@ import json
 
 from .models import Task, Project, Label, Comment, UserProfile
 from .forms import TaskForm, ProjectForm, LabelForm
+from django.views.generic import TemplateView
+from django.http import HttpResponse
 
 
 def index(request):
@@ -407,3 +409,9 @@ def settings_view(request):
         'current_view': 'settings',
     }
     return render(request, 'todo/settings.html', context)
+
+
+# Privacy Policy View
+def privacy_policy(request):
+    """Serve the privacy policy page"""
+    return render(request, 'privacy_policy.html')
