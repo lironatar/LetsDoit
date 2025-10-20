@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { EyeIcon, EyeSlashIcon } from '@heroicons/react/24/outline'
 import { getFullURL, getFetchOptions } from '../utils/apiUrl'
+import PrivacyPolicy from './PrivacyPolicy'
 
 const RegistrationForm = ({ onRegisterSuccess, onSwitchToLogin, isLoading, setIsLoading }) => {
   const [formData, setFormData] = useState({
@@ -12,6 +13,7 @@ const RegistrationForm = ({ onRegisterSuccess, onSwitchToLogin, isLoading, setIs
   const [isRegistering, setIsRegistering] = useState(false)
   const [invitationToken, setInvitationToken] = useState('')
   const [invitationInfo, setInvitationInfo] = useState(null)
+  const [showPrivacyPolicy, setShowPrivacyPolicy] = useState(false)
 
   const validateEmail = (email) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
@@ -281,6 +283,21 @@ const RegistrationForm = ({ onRegisterSuccess, onSwitchToLogin, isLoading, setIs
           </div>
         </div>
 
+        {/* Privacy Policy Link */}
+        <div className="text-center text-xs text-gray-600 hebrew-text">
+          <p>
+            על ידי ההירשמות, אתה מסכים ל
+            <button
+              type="button"
+              onClick={() => setShowPrivacyPolicy(true)}
+              className="text-blue-600 hover:text-blue-700 hover:underline mx-1 inline font-medium"
+              disabled={isRegistering}
+            >
+              מדיניות הפרטיות שלנו
+            </button>
+          </p>
+        </div>
+
         {/* Submit Button */}
         <button
           type="submit"
@@ -316,6 +333,14 @@ const RegistrationForm = ({ onRegisterSuccess, onSwitchToLogin, isLoading, setIs
           </p>
         </div>
       </form>
+
+      {/* Privacy Policy Modal */}
+      {showPrivacyPolicy && (
+        <PrivacyPolicy
+          onClose={() => setShowPrivacyPolicy(false)}
+          initialLanguage="he"
+        />
+      )}
     </div>
   )
 }
