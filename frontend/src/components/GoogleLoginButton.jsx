@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
+import { jwtDecode } from 'jwt-decode'
 import { getFullURL, getFetchOptions } from '../utils/apiUrl'
 
 const GoogleLoginButton = ({ onGoogleLogin, disabled = false }) => {
@@ -21,10 +22,8 @@ const GoogleLoginButton = ({ onGoogleLogin, disabled = false }) => {
   const renderGoogleButton = () => {
     if (!window.google || !googleButtonRef.current) return
 
-    // DEBUG: Log client_id to verify it's being injected
     const clientId = import.meta.env.VITE_GOOGLE_OAUTH_CLIENT_ID
     console.log('🔑 Google Client ID:', clientId ? `${clientId.substring(0, 20)}...` : 'MISSING!')
-    console.log('🌍 Current origin:', window.location.origin)
 
     try {
       window.google.accounts.id.initialize({
@@ -43,7 +42,6 @@ const GoogleLoginButton = ({ onGoogleLogin, disabled = false }) => {
         {
           theme: 'outline',
           size: 'large',
-          // width must be numeric per GSI; using container width instead
           text: 'signin_with',
           locale: 'he',
           shape: 'rectangular'
@@ -51,7 +49,6 @@ const GoogleLoginButton = ({ onGoogleLogin, disabled = false }) => {
       )
     } catch (error) {
       console.error('Error rendering Google button:', error)
-      // Fallback to manual button if Google button fails
       renderFallbackButton()
     }
   }
@@ -80,83 +77,46 @@ const GoogleLoginButton = ({ onGoogleLogin, disabled = false }) => {
     }
   }
 
-  const handleGoogleLogin = async () => {
-    // This is now handled by the rendered Google button
-    console.log('Google login initiated by rendered button')
-  }
-
   const handleCredentialResponse = async (response) => {
     try {
-      console.log('Google credential response received:', response)
+      console.log('✅ Google login successful')
       
       // Decode the JWT token to get user info
-      const payload = JSON.parse(atob(response.credential.split('.')[1]))
-      console.log('Decoded payload:', payload)
-      console.log('📛 Google name fields:', {
-        name: payload.name,
-        given_name: payload.given_name,
-        family_name: payload.family_name
+      const decoded = jwtDecode(response.credential)
+      console.log('📋 Decoded user info:', {
+        email: decoded.email,
+        name: decoded.name,
+        given_name: decoded.given_name,
+        family_name: decoded.family_name,
+        picture: decoded.picture
       })
       
-      // Debug: Check the raw JWT parts
-      const jwtParts = response.credential.split('.')
-      console.log('🔍 Raw JWT parts:')
-      console.log('  Header:', atob(jwtParts[0]))
-      console.log('  Payload (raw base64):', jwtParts[1])
-      
-      // Try different decoding methods
-      try {
-        const decodedPayload = atob(jwtParts[1])
-        console.log('  Payload (atob decoded):', decodedPayload)
-        
-        // Check if the raw base64 contains Hebrew characters
-        const rawPayload = jwtParts[1]
-        console.log('  Raw base64 contains Hebrew chars:', /[\u0590-\u05FF]/.test(rawPayload))
-        
-        // Try to decode with different methods
-        const payloadObj = JSON.parse(decodedPayload)
-        console.log('  Parsed payload name fields:')
-        console.log('    name:', payloadObj.name, 'type:', typeof payloadObj.name)
-        console.log('    given_name:', payloadObj.given_name, 'type:', typeof payloadObj.given_name)
-        console.log('    family_name:', payloadObj.family_name, 'type:', typeof payloadObj.family_name)
-        
-        // Check character codes
-        if (payloadObj.name) {
-          console.log('  name char codes:', Array.from(payloadObj.name).map(c => c.charCodeAt(0)))
-        }
-        if (payloadObj.given_name) {
-          console.log('  given_name char codes:', Array.from(payloadObj.given_name).map(c => c.charCodeAt(0)))
-        }
-        
-      } catch (e) {
-        console.log('  Error decoding JWT:', e)
-      }
-      
       // Send the credential to your backend
+      console.log('📤 Sending credential to backend...')
       const backendResponse = await fetch(getFullURL('/auth/google-login/'), {
         ...getFetchOptions('POST', {
           credential: response.credential,
-          email: payload.email,
-          name: payload.name,
-          given_name: payload.given_name || payload.name?.split(' ')[0] || '',
-          family_name: payload.family_name || payload.name?.split(' ').slice(1).join(' ') || '',
-          picture: payload.picture
+          email: decoded.email,
+          name: decoded.name,
+          given_name: decoded.given_name || decoded.name?.split(' ')[0] || '',
+          family_name: decoded.family_name || decoded.name?.split(' ').slice(1).join(' ') || '',
+          picture: decoded.picture
         })
       })
 
-      console.log('Backend response status:', backendResponse.status)
+      console.log('📥 Backend response status:', backendResponse.status)
       const data = await backendResponse.json()
-      console.log('Backend response data:', data)
+      console.log('📥 Backend response data:', data)
 
       if (data.success) {
-        // Call the parent component's callback with the user data
+        console.log('✅ Google login successful!')
         onGoogleLogin(data)
       } else {
-        console.error('Google login failed:', data.message)
+        console.error('❌ Google login failed:', data.message)
         alert(`Google login failed: ${data.message}`)
       }
     } catch (error) {
-      console.error('Error processing Google login:', error)
+      console.error('❌ Error processing Google login:', error)
       alert(`Error: ${error.message}`)
     } finally {
       setIsLoading(false)
