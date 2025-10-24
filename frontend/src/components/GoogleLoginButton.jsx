@@ -26,38 +26,50 @@ const GoogleLoginButton = ({ onGoogleLogin, disabled = false }) => {
     console.log('🔑 Google Client ID:', clientId ? `${clientId.substring(0, 20)}...` : 'MISSING!')
 
     try {
+      // Initialize with Railway-compatible settings
       window.google.accounts.id.initialize({
         client_id: clientId,
         callback: handleCredentialResponse,
         auto_select: false,
         cancel_on_tap_outside: true,
         ux_mode: 'popup',
-        use_fedcm_for_prompt: true
+        use_fedcm_for_prompt: true,
+        // Railway-specific settings to avoid postMessage issues
+        state_cookie_domain: window.location.hostname,
+        hosted_domain: window.location.hostname
       })
 
       // Clear any existing content
       googleButtonRef.current.innerHTML = ''
 
-      // Render the button directly in the div
-      window.google.accounts.id.renderButton(
-        googleButtonRef.current,
-        {
-          theme: 'outline',
-          size: 'large',
-          text: 'signin_with',
-          locale: 'he',
-          shape: 'rectangular',
-          width: '100%'
-        }
-      )
+      // Render the button with error handling
+      try {
+        window.google.accounts.id.renderButton(
+          googleButtonRef.current,
+          {
+            theme: 'outline',
+            size: 'large',
+            text: 'signin_with',
+            locale: 'he',
+            shape: 'rectangular',
+            width: '100%'
+          }
+        )
+        console.log('✅ Google button rendered successfully')
+      } catch (renderError) {
+        console.warn('⚠️ Google button render failed, using fallback:', renderError)
+        renderFallbackButton()
+      }
     } catch (error) {
-      console.error('Error rendering Google button:', error)
+      console.error('❌ Error initializing Google:', error)
       renderFallbackButton()
     }
   }
 
   const renderFallbackButton = () => {
     if (!googleButtonRef.current) return
+    
+    console.log('🔄 Rendering fallback button for Railway compatibility')
     
     googleButtonRef.current.innerHTML = `
       <button type="button" onclick="handleManualGoogleLogin()" 
@@ -72,10 +84,29 @@ const GoogleLoginButton = ({ onGoogleLogin, disabled = false }) => {
       </button>
     `
     
-    // Add global function for manual login
+    // Add global function for manual login with Railway compatibility
     window.handleManualGoogleLogin = () => {
-      if (window.google && window.google.accounts) {
-        window.google.accounts.id.prompt()
+      console.log('🔑 Manual Google login triggered')
+      try {
+        if (window.google && window.google.accounts) {
+          // Use popup mode for Railway compatibility
+          window.google.accounts.id.prompt({
+            ux_mode: 'popup',
+            use_fedcm_for_prompt: true
+          })
+        } else {
+          console.warn('⚠️ Google SDK not available, redirecting to OAuth')
+          // Fallback: redirect to Google OAuth
+          const clientId = import.meta.env.VITE_GOOGLE_OAUTH_CLIENT_ID
+          const redirectUri = encodeURIComponent(window.location.origin + '/auth/google/callback')
+          const scope = encodeURIComponent('openid email profile')
+          const responseType = 'code'
+          const googleAuthUrl = `https://accounts.google.com/oauth/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&scope=${scope}&response_type=${responseType}`
+          window.location.href = googleAuthUrl
+        }
+      } catch (error) {
+        console.error('❌ Manual login failed:', error)
+        alert('שגיאה בהתחברות עם Google. אנא נסה שוב.')
       }
     }
   }
@@ -148,9 +179,19 @@ const GoogleLoginButton = ({ onGoogleLogin, disabled = false }) => {
       script.src = 'https://accounts.google.com/gsi/client'
       script.async = true
       script.defer = true
+      script.crossOrigin = 'anonymous'
       script.onload = () => {
-        setGoogleLoaded(true)
-        resolve()
+        // Add delay to ensure Google SDK is fully initialized
+        setTimeout(() => {
+          if (window.google && window.google.accounts) {
+            setGoogleLoaded(true)
+            resolve()
+          } else {
+            console.warn('Google script loaded but not fully initialized')
+            setGoogleLoaded(true)
+            resolve()
+          }
+        }, 500)
       }
       script.onerror = (error) => {
         console.error('Failed to load Google script:', error)
