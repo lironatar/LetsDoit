@@ -30,7 +30,9 @@ const GoogleLoginButton = ({ onGoogleLogin, disabled = false }) => {
         client_id: clientId,
         callback: handleCredentialResponse,
         auto_select: false,
-        cancel_on_tap_outside: true
+        cancel_on_tap_outside: true,
+        ux_mode: 'popup',
+        use_fedcm_for_prompt: true
       })
 
       // Clear any existing content
@@ -44,7 +46,8 @@ const GoogleLoginButton = ({ onGoogleLogin, disabled = false }) => {
           size: 'large',
           text: 'signin_with',
           locale: 'he',
-          shape: 'rectangular'
+          shape: 'rectangular',
+          width: '100%'
         }
       )
     } catch (error) {
