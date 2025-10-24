@@ -162,6 +162,12 @@ CORS_ALLOWED_ORIGINS = [
     "https://00b0433173cf.ngrok-free.app",  # ngrok backend
 ]
 
+# Allow Railway subdomains
+CORS_ALLOW_ALL_ORIGINS = False  # Keep security
+CORS_ALLOWED_ORIGIN_REGEXES = [
+    r"^https://.*\.up\.railway\.app$",  # Allow all Railway subdomains
+]
+
 CORS_ALLOW_CREDENTIALS = True
 
 # CSRF settings for React frontend
@@ -174,6 +180,11 @@ CSRF_TRUSTED_ORIGINS = [
     "https://letsdoit-production-6d29.up.railway.app",  # Railway production
     "https://74f26fdbdc7f.ngrok-free.app",  # ngrok frontend
     "https://00b0433173cf.ngrok-free.app",  # ngrok backend
+]
+
+# Allow Railway subdomains for CSRF
+CSRF_TRUSTED_ORIGIN_REGEXES = [
+    r"^https://.*\.up\.railway\.app$",  # Allow all Railway subdomains
 ]
 
 # Login URLs
@@ -203,6 +214,12 @@ SECURE_CONTENT_TYPE_NOSNIFF = config('SECURE_CONTENT_TYPE_NOSNIFF', default=True
 # IMPORTANT: Set to SAMEORIGIN to allow Google OAuth iframes to work
 # DENY would block Google Sign-In button from functioning
 X_FRAME_OPTIONS = config('X_FRAME_OPTIONS', default='SAMEORIGIN')
+
+# Content Security Policy for Google OAuth
+# Allow Google's iframe to work properly
+CSP_DEFAULT_SRC = ("'self'", "'unsafe-inline'", "https://accounts.google.com", "https://apis.google.com")
+CSP_FRAME_SRC = ("'self'", "https://accounts.google.com")
+CSP_SCRIPT_SRC = ("'self'", "'unsafe-inline'", "https://accounts.google.com", "https://apis.google.com")
 
 # HTTPS Settings (enable these when using HTTPS)
 SECURE_SSL_REDIRECT = config('SECURE_SSL_REDIRECT', default=False, cast=bool)

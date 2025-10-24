@@ -1,5 +1,4 @@
 import { useState, useEffect, useRef } from 'react'
-import { jwtDecode } from 'jwt-decode'
 import { getFullURL, getFetchOptions } from '../utils/apiUrl'
 
 const GoogleLoginButton = ({ onGoogleLogin, disabled = false }) => {
@@ -22,54 +21,43 @@ const GoogleLoginButton = ({ onGoogleLogin, disabled = false }) => {
   const renderGoogleButton = () => {
     if (!window.google || !googleButtonRef.current) return
 
+    // DEBUG: Log client_id to verify it's being injected
     const clientId = import.meta.env.VITE_GOOGLE_OAUTH_CLIENT_ID
     console.log('🔑 Google Client ID:', clientId ? `${clientId.substring(0, 20)}...` : 'MISSING!')
+    console.log('🌍 Current origin:', window.location.origin)
 
     try {
-      // Initialize with Railway-compatible settings
       window.google.accounts.id.initialize({
         client_id: clientId,
         callback: handleCredentialResponse,
         auto_select: false,
-        cancel_on_tap_outside: true,
-        ux_mode: 'popup',
-        use_fedcm_for_prompt: true,
-        // Railway-specific settings to avoid postMessage issues
-        state_cookie_domain: window.location.hostname,
-        hosted_domain: window.location.hostname
+        cancel_on_tap_outside: true
       })
 
       // Clear any existing content
       googleButtonRef.current.innerHTML = ''
 
-      // Render the button with error handling
-      try {
-        window.google.accounts.id.renderButton(
-          googleButtonRef.current,
-          {
-            theme: 'outline',
-            size: 'large',
-            text: 'signin_with',
-            locale: 'he',
-            shape: 'rectangular',
-            width: '100%'
-          }
-        )
-        console.log('✅ Google button rendered successfully')
-      } catch (renderError) {
-        console.warn('⚠️ Google button render failed, using fallback:', renderError)
-        renderFallbackButton()
-      }
+      // Render the button directly in the div
+      window.google.accounts.id.renderButton(
+        googleButtonRef.current,
+        {
+          theme: 'outline',
+          size: 'large',
+          // width must be numeric per GSI; using container width instead
+          text: 'signin_with',
+          locale: 'he',
+          shape: 'rectangular'
+        }
+      )
     } catch (error) {
-      console.error('❌ Error initializing Google:', error)
+      console.error('Error rendering Google button:', error)
+      // Fallback to manual button if Google button fails
       renderFallbackButton()
     }
   }
 
   const renderFallbackButton = () => {
     if (!googleButtonRef.current) return
-    
-    console.log('🔄 Rendering fallback button for Railway compatibility')
     
     googleButtonRef.current.innerHTML = `
       <button type="button" onclick="handleManualGoogleLogin()" 
@@ -84,73 +72,91 @@ const GoogleLoginButton = ({ onGoogleLogin, disabled = false }) => {
       </button>
     `
     
-    // Add global function for manual login with Railway compatibility
+    // Add global function for manual login
     window.handleManualGoogleLogin = () => {
-      console.log('🔑 Manual Google login triggered')
-      try {
-        if (window.google && window.google.accounts) {
-          // Use popup mode for Railway compatibility
-          window.google.accounts.id.prompt({
-            ux_mode: 'popup',
-            use_fedcm_for_prompt: true
-          })
-        } else {
-          console.warn('⚠️ Google SDK not available, redirecting to OAuth')
-          // Fallback: redirect to Google OAuth
-          const clientId = import.meta.env.VITE_GOOGLE_OAUTH_CLIENT_ID
-          const redirectUri = encodeURIComponent(window.location.origin + '/auth/google/callback')
-          const scope = encodeURIComponent('openid email profile')
-          const responseType = 'code'
-          const googleAuthUrl = `https://accounts.google.com/oauth/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&scope=${scope}&response_type=${responseType}`
-          window.location.href = googleAuthUrl
-        }
-      } catch (error) {
-        console.error('❌ Manual login failed:', error)
-        alert('שגיאה בהתחברות עם Google. אנא נסה שוב.')
+      if (window.google && window.google.accounts) {
+        window.google.accounts.id.prompt()
       }
     }
   }
 
+  const handleGoogleLogin = async () => {
+    // This is now handled by the rendered Google button
+    console.log('Google login initiated by rendered button')
+  }
+
   const handleCredentialResponse = async (response) => {
     try {
-      console.log('✅ Google login successful')
+      console.log('Google credential response received:', response)
       
       // Decode the JWT token to get user info
-      const decoded = jwtDecode(response.credential)
-      console.log('📋 Decoded user info:', {
-        email: decoded.email,
-        name: decoded.name,
-        given_name: decoded.given_name,
-        family_name: decoded.family_name,
-        picture: decoded.picture
+      const payload = JSON.parse(atob(response.credential.split('.')[1]))
+      console.log('Decoded payload:', payload)
+      console.log('📛 Google name fields:', {
+        name: payload.name,
+        given_name: payload.given_name,
+        family_name: payload.family_name
       })
       
+      // Debug: Check the raw JWT parts
+      const jwtParts = response.credential.split('.')
+      console.log('🔍 Raw JWT parts:')
+      console.log('  Header:', atob(jwtParts[0]))
+      console.log('  Payload (raw base64):', jwtParts[1])
+      
+      // Try different decoding methods
+      try {
+        const decodedPayload = atob(jwtParts[1])
+        console.log('  Payload (atob decoded):', decodedPayload)
+        
+        // Check if the raw base64 contains Hebrew characters
+        const rawPayload = jwtParts[1]
+        console.log('  Raw base64 contains Hebrew chars:', /[\u0590-\u05FF]/.test(rawPayload))
+        
+        // Try to decode with different methods
+        const payloadObj = JSON.parse(decodedPayload)
+        console.log('  Parsed payload name fields:')
+        console.log('    name:', payloadObj.name, 'type:', typeof payloadObj.name)
+        console.log('    given_name:', payloadObj.given_name, 'type:', typeof payloadObj.given_name)
+        console.log('    family_name:', payloadObj.family_name, 'type:', typeof payloadObj.family_name)
+        
+        // Check character codes
+        if (payloadObj.name) {
+          console.log('  name char codes:', Array.from(payloadObj.name).map(c => c.charCodeAt(0)))
+        }
+        if (payloadObj.given_name) {
+          console.log('  given_name char codes:', Array.from(payloadObj.given_name).map(c => c.charCodeAt(0)))
+        }
+        
+      } catch (e) {
+        console.log('  Error decoding JWT:', e)
+      }
+      
       // Send the credential to your backend
-      console.log('📤 Sending credential to backend...')
       const backendResponse = await fetch(getFullURL('/auth/google-login/'), {
         ...getFetchOptions('POST', {
           credential: response.credential,
-          email: decoded.email,
-          name: decoded.name,
-          given_name: decoded.given_name || decoded.name?.split(' ')[0] || '',
-          family_name: decoded.family_name || decoded.name?.split(' ').slice(1).join(' ') || '',
-          picture: decoded.picture
+          email: payload.email,
+          name: payload.name,
+          given_name: payload.given_name || payload.name?.split(' ')[0] || '',
+          family_name: payload.family_name || payload.name?.split(' ').slice(1).join(' ') || '',
+          picture: payload.picture
         })
       })
 
-      console.log('📥 Backend response status:', backendResponse.status)
+      console.log('Backend response status:', backendResponse.status)
       const data = await backendResponse.json()
-      console.log('📥 Backend response data:', data)
+      console.log('Backend response data:', data)
 
       if (data.success) {
-        console.log('✅ Google login successful!')
+        // Call the parent component's callback with the user data
         onGoogleLogin(data)
       } else {
-        console.error('❌ Google login failed:', data.message)
+        console.error('Google login failed:', data.message)
         alert(`Google login failed: ${data.message}`)
       }
     } catch (error) {
-      console.error('❌ Error processing Google login:', error)
+      console.error('Error processing Google login:', error)
       alert(`Error: ${error.message}`)
     } finally {
       setIsLoading(false)
@@ -179,19 +185,9 @@ const GoogleLoginButton = ({ onGoogleLogin, disabled = false }) => {
       script.src = 'https://accounts.google.com/gsi/client'
       script.async = true
       script.defer = true
-      script.crossOrigin = 'anonymous'
       script.onload = () => {
-        // Add delay to ensure Google SDK is fully initialized
-        setTimeout(() => {
-          if (window.google && window.google.accounts) {
-            setGoogleLoaded(true)
-            resolve()
-          } else {
-            console.warn('Google script loaded but not fully initialized')
-            setGoogleLoaded(true)
-            resolve()
-          }
-        }, 500)
+        setGoogleLoaded(true)
+        resolve()
       }
       script.onerror = (error) => {
         console.error('Failed to load Google script:', error)
