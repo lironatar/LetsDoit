@@ -1,7 +1,8 @@
 #!/bin/bash
 
-# Quick Deployment Script for ToDoFast with Python 3.12
-# Optimized for Python 3.12.3
+# One-Command Deployment for ToDoFast
+# Repository: https://github.com/lironatar/LetsDoit.git
+# Optimized for Python 3.12
 
 set -e
 
@@ -35,26 +36,25 @@ if [[ $EUID -eq 0 ]]; then
 fi
 
 # Configuration
+REPO_URL="https://github.com/lironatar/LetsDoit.git"
 DOMAIN=""
 EMAIL=""
-REPO_URL=""
 
 # Get user input
-echo "=== ToDoFast Quick Deployment with Python 3.12 ==="
-echo "This script will set up your ToDoFast application on a Linux server."
+echo "=== ToDoFast One-Command Deployment ==="
+echo "Repository: $REPO_URL"
+echo "Optimized for Python 3.12"
 echo ""
 
 read -p "Enter your domain name (e.g., yourdomain.com): " DOMAIN
 read -p "Enter your email for SSL certificate: " EMAIL
-# Repository URL is now fixed
-REPO_URL="https://github.com/lironatar/LetsDoit.git"
 
 if [ -z "$DOMAIN" ] || [ -z "$EMAIL" ]; then
     log_error "Domain and email are required!"
     exit 1
 fi
 
-log_step "Starting deployment process with Python 3.12..."
+log_step "Starting deployment process..."
 
 # 1. Update system
 log_step "1. Updating system packages..."
@@ -62,7 +62,7 @@ sudo apt update && sudo apt upgrade -y
 
 # 2. Install required packages
 log_step "2. Installing required packages..."
-sudo apt install -y python3.12 python3.12-venv python3.12-dev python3.12-distutils python3-pip nginx postgresql postgresql-contrib git build-essential libpq-dev sqlite3
+sudo apt install -y python3.12 python3.12-venv python3.12-dev python3.12-distutils python3-pip nginx git build-essential sqlite3
 
 # Install Node.js
 curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
@@ -76,7 +76,7 @@ sudo chown todofast:todofast /opt/todofast
 
 # 4. Clone and setup application
 log_step "4. Setting up application with Python 3.12..."
-sudo -u todofast git clone https://github.com/lironatar/LetsDoit.git /opt/todofast/app
+sudo -u todofast git clone $REPO_URL /opt/todofast/app
 sudo -u todofast python3.12 -m venv /opt/todofast/venv
 sudo -u todofast /opt/todofast/venv/bin/pip install --upgrade pip
 sudo -u todofast /opt/todofast/venv/bin/pip install -r /opt/todofast/app/requirements.txt
@@ -104,7 +104,7 @@ sudo -u todofast /opt/todofast/venv/bin/python /opt/todofast/app/manage.py colle
 log_step "7. Creating systemd service..."
 sudo tee /etc/systemd/system/todofast.service > /dev/null << EOF
 [Unit]
-Description=ToDoFast Django Application
+Description=ToDoFast Django Application (Python 3.12)
 After=network.target network-online.target
 Wants=network-online.target
 Requires=network.target
@@ -263,17 +263,8 @@ sudo ufw allow 80/tcp
 sudo ufw allow 443/tcp
 sudo ufw --force enable
 
-# 11. Setup backup
-log_step "11. Setting up backup system..."
-sudo chmod +x /opt/todofast/app/deploy-python312.sh
-sudo cp /opt/todofast/app/deploy-python312.sh /usr/local/bin/todofast-deploy
-sudo chmod +x /usr/local/bin/todofast-deploy
-
-# Create backup cron job
-echo "0 2 * * * /usr/local/bin/todofast-deploy backup" | sudo crontab -u todofast -
-
-# 12. Final checks
-log_step "12. Running final checks..."
+# 11. Final checks
+log_step "11. Running final checks..."
 sudo systemctl status todofast --no-pager
 sudo systemctl status nginx --no-pager
 
@@ -282,18 +273,17 @@ log_info "Testing SSL certificate..."
 curl -I https://$DOMAIN || log_warn "SSL test failed - check certificate"
 
 echo ""
-log_info "=== Deployment Complete with Python 3.12! ==="
+log_info "=== Deployment Complete! ==="
 echo ""
 echo "Your ToDoFast application is now running at: https://$DOMAIN"
 echo ""
+echo "Repository: $REPO_URL"
 echo "Python version: $(sudo -u todofast /opt/todofast/venv/bin/python --version)"
 echo ""
 echo "Useful commands:"
 echo "  sudo systemctl status todofast    # Check service status"
 echo "  sudo systemctl restart todofast   # Restart application"
-echo "  todofast-deploy status            # Check application status"
-echo "  todofast-deploy logs              # View logs"
-echo "  todofast-deploy update            # Update application"
+echo "  sudo journalctl -u todofast -f    # View logs"
 echo ""
 echo "Important files:"
 echo "  Application: /opt/todofast/app"
@@ -306,4 +296,4 @@ echo "  1. Update your Google OAuth settings with the new domain"
 echo "  2. Configure your email settings in /opt/todofast/.env"
 echo "  3. Create a superuser account: sudo -u todofast /opt/todofast/venv/bin/python /opt/todofast/app/manage.py createsuperuser"
 echo ""
-log_info "Deployment completed successfully with Python 3.12!"
+log_info "Deployment completed successfully!"

@@ -46,10 +46,11 @@ echo ""
 
 read -p "Enter your domain name (e.g., yourdomain.com): " DOMAIN
 read -p "Enter your email for SSL certificate: " EMAIL
-read -p "Enter your Git repository URL: " REPO_URL
+# Repository URL is now fixed
+REPO_URL="https://github.com/lironatar/LetsDoit.git"
 
-if [ -z "$DOMAIN" ] || [ -z "$EMAIL" ] || [ -z "$REPO_URL" ]; then
-    log_error "All fields are required!"
+if [ -z "$DOMAIN" ] || [ -z "$EMAIL" ]; then
+    log_error "Domain and email are required!"
     exit 1
 fi
 
@@ -75,7 +76,7 @@ sudo chown todofast:todofast /opt/todofast
 
 # 4. Clone and setup application
 log_step "4. Setting up application..."
-sudo -u todofast git clone $REPO_URL /opt/todofast/app
+sudo -u todofast git clone https://github.com/lironatar/LetsDoit.git /opt/todofast/app
 sudo -u todofast python3.11 -m venv /opt/todofast/venv
 sudo -u todofast /opt/todofast/venv/bin/pip install --upgrade pip
 sudo -u todofast /opt/todofast/venv/bin/pip install -r /opt/todofast/app/requirements.txt

@@ -55,7 +55,7 @@ setup_application() {
     # Clone repository (if not exists)
     if [ ! -d "$APP_DIR" ]; then
         log_info "Cloning repository..."
-        sudo -u $USER git clone <your-repo-url> $APP_DIR
+        sudo -u $USER git clone https://github.com/lironatar/LetsDoit.git $APP_DIR
     fi
     
     # Create virtual environment with Python 3.12
