@@ -1,0 +1,55 @@
+# Systemd Service Configuration for ToDoFast
+# Place this file in /etc/systemd/system/todofast.service
+# Then run: sudo systemctl daemon-reload && sudo systemctl enable todofast
+
+[Unit]
+Description=ToDoFast Django Application
+Documentation=https://github.com/yourusername/todofast
+After=network.target network-online.target
+Wants=network-online.target
+Requires=network.target
+
+[Service]
+Type=exec
+User=todofast
+Group=todofast
+WorkingDirectory=/opt/todofast/app
+Environment=PATH=/opt/todofast/venv/bin:/usr/local/bin:/usr/bin:/bin
+EnvironmentFile=/opt/todofast/.env
+
+# Main application command
+ExecStart=/opt/todofast/venv/bin/waitress-serve --host=127.0.0.1 --port=8000 --threads=4 --url-scheme=https todofast.wsgi:application
+
+# Process management
+ExecReload=/bin/kill -s HUP $MAINPID
+KillMode=mixed
+KillSignal=SIGINT
+TimeoutStopSec=30
+
+# Restart policy
+Restart=always
+RestartSec=3
+StartLimitBurst=5
+StartLimitInterval=60s
+
+# Security settings
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/opt/todofast
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+
+# Resource limits
+LimitNOFILE=65536
+LimitNPROC=4096
+
+# Logging
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=todofast
+
+[Install]
+WantedBy=multi-user.target
