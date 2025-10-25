@@ -1,3 +1,4 @@
+import React from 'react'
 export default function TodayIconGreen({ size = 16, className = '' }) {
   const day = new Date().getDate()
   // Calculate number font size and vertical offset proportionally to icon size

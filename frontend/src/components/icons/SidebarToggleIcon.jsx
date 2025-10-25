@@ -1,3 +1,4 @@
+import React from 'react'
 export default function SidebarToggleIcon({ isOpen = true, size = 24, className = '', onClick }) {
   return (
     <button 

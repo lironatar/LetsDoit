@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import { XMarkIcon, CheckCircleIcon, PlusIcon } from '@heroicons/react/24/outline'
 
 function Toast({ 

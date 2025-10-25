@@ -1,3 +1,4 @@
+import React from 'react'
 export default function CommentIcon({ size = 16, className = '', color = 'currentColor' }) {
   return (
     <div className={className} style={{ width: `${size}px`, height: `${size}px` }}>

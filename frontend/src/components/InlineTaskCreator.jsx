@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 import { CalendarIcon, FlagIcon, BellIcon } from '@heroicons/react/24/outline'
 
 function InlineTaskCreator({ isOpen, onClose, onCreateTask, onCancel, currentView, projects, teams }) {

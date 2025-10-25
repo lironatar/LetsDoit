@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import { ChevronRightIcon, ChevronLeftIcon } from '@heroicons/react/24/outline'
 
 function HebrewCalendar({ selectedDate, onSelectDate, onClose }) {

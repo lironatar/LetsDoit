@@ -1,3 +1,4 @@
+import React from 'react'
 function MobilePreview() {
   return (
     <div className="relative">

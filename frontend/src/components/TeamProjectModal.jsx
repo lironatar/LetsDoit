@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import { XMarkIcon, UsersIcon, UserPlusIcon } from '@heroicons/react/24/outline'
 import { friendAPI } from '../services/api'
 

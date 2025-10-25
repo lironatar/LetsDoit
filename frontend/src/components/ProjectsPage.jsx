@@ -1,4 +1,4 @@
-import { useState, useMemo, useRef, useEffect } from 'react'
+import React, { useState, useMemo, useRef, useEffect } from 'react'
 import { PlusIcon, ChevronDownIcon, Squares2X2Icon } from '@heroicons/react/24/outline'
 
 function ProjectsPage({ projects = [], onOpenProjectModal, onSelectProject }) {

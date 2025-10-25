@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import React, { useState } from 'react'
 import { XMarkIcon, UserGroupIcon } from '@heroicons/react/24/outline'
 
 function TeamCreationModal({ isOpen, onClose, onCreateTeam }) {

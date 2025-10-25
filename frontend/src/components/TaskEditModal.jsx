@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { CalendarIcon, FlagIcon, XMarkIcon } from '@heroicons/react/24/outline'
 
 function TaskEditModal({ isOpen, onClose, onUpdateTask, task, projects, teams }) {
