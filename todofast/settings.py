@@ -153,13 +153,14 @@ REST_FRAMEWORK = {
 FRONTEND_URL = config('FRONTEND_URL', default='http://localhost:5173')
 CORS_ALLOWED_ORIGINS = [
     FRONTEND_URL,
-    "http://localhost:5173",  # Always allow localhost for development
+    "http://63.250.61.126",  # server IP (HTTP)
+    "http://localhost:5173",  # local dev
     "http://127.0.0.1:5173",
-    "https://lets-do-it.co.il",  # Custom production domain
-    "https://www.lets-do-it.co.il",  # Custom production domain (www)
-    "https://letsdoit-production-6d29.up.railway.app",  # Railway production
-    "https://74f26fdbdc7f.ngrok-free.app",  # ngrok frontend
-    "https://00b0433173cf.ngrok-free.app",  # ngrok backend
+    "https://lets-do-it.co.il",
+    "https://www.lets-do-it.co.il",
+    "https://letsdoit-production-6d29.up.railway.app",
+    "https://74f26fdbdc7f.ngrok-free.app",
+    "https://00b0433173cf.ngrok-free.app",
 ]
 
 # Allow Railway subdomains
@@ -170,9 +171,32 @@ CORS_ALLOWED_ORIGIN_REGEXES = [
 
 CORS_ALLOW_CREDENTIALS = True
 
+# Explicit allow-lists to ensure POST/JSON work in production
+CORS_ALLOW_HEADERS = [
+    'accept',
+    'accept-encoding',
+    'authorization',
+    'content-type',
+    'dnt',
+    'origin',
+    'user-agent',
+    'x-csrftoken',
+    'x-requested-with',
+]
+
+CORS_ALLOW_METHODS = [
+    'DELETE',
+    'GET',
+    'OPTIONS',
+    'PATCH',
+    'POST',
+    'PUT',
+]
+
 # CSRF settings for React frontend
 CSRF_TRUSTED_ORIGINS = [
     FRONTEND_URL,
+    "http://63.250.61.126",  # server IP (HTTP)
     "http://localhost:5173",
     "http://127.0.0.1:5173",
     "https://lets-do-it.co.il",  # Custom production domain
