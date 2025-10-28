@@ -12,6 +12,47 @@ Python 3.12.3 is the **latest and greatest** Python version! It's even better th
 
 ## 🚀 Quick Deployment with Python 3.12
 
+### Linux best-practice env management (no Railway)
+
+Use a single root-owned env file so secrets aren’t committed:
+```
+sudo tee /etc/todofast.env > /dev/null << 'EOF'
+SECRET_KEY=CHANGE_ME
+DEBUG=False
+ALLOWED_HOSTS=63.250.61.126,localhost,127.0.0.1
+FRONTEND_URL=http://63.250.61.126
+EMAIL_HOST=smtp.gmail.com
+EMAIL_PORT=587
+EMAIL_USE_TLS=True
+EMAIL_HOST_USER=
+EMAIL_HOST_PASSWORD=
+DEFAULT_FROM_EMAIL=TodoFast <noreply@todofast.com>
+GOOGLE_OAUTH2_CLIENT_ID=
+GOOGLE_OAUTH2_CLIENT_SECRET=
+SECURE_SSL_REDIRECT=False
+SECURE_HSTS_SECONDS=0
+SECURE_HSTS_INCLUDE_SUBDOMAINS=False
+SECURE_HSTS_PRELOAD=False
+SESSION_COOKIE_SECURE=False
+CSRF_COOKIE_SECURE=False
+LOG_LEVEL=INFO
+EOF
+sudo chmod 600 /etc/todofast.env
+```
+
+Ensure your systemd service includes:
+```
+EnvironmentFile=/etc/todofast.env
+```
+
+Then reload and restart:
+```
+sudo systemctl daemon-reload
+sudo systemctl restart todofast
+```
+
+This replaces Railway variables with a secure Linux setup.
+
 ### Option 1: One-Click Deployment (Recommended)
 
 ```bash

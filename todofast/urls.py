@@ -20,6 +20,6 @@ urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 # Serve React assets at /assets/ path (for production compatibility)
 from django.views.static import serve
 urlpatterns += [
+    # Serve built React assets that live under STATIC_ROOT/assets
     path('assets/<path:path>', serve, {'document_root': settings.STATIC_ROOT / 'assets'}),
-    path('vite.svg', serve, {'document_root': settings.STATIC_ROOT}),
 ]
