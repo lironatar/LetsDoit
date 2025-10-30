@@ -251,6 +251,12 @@ SECURE_HSTS_SECONDS = config('SECURE_HSTS_SECONDS', default=0, cast=int)
 SECURE_HSTS_INCLUDE_SUBDOMAINS = config('SECURE_HSTS_INCLUDE_SUBDOMAINS', default=False, cast=bool)
 SECURE_HSTS_PRELOAD = config('SECURE_HSTS_PRELOAD', default=False, cast=bool)
 
+# Make Django build absolute URLs with the real Host sent by Nginx
+USE_X_FORWARDED_HOST = True
+USE_X_FORWARDED_PORT = True
+# If you terminate SSL at the proxy, uncomment the next line in HTTPS setups
+# SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
 # Session Configuration
 SESSION_COOKIE_SECURE = config('SESSION_COOKIE_SECURE', default=False, cast=bool)  # Set to True when SSL is enabled
 SESSION_COOKIE_HTTPONLY = True
